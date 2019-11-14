@@ -29,20 +29,21 @@ Meteor.startup(() => {
  * I'm not sure what the best place for this would be, so I'm dumping it here for now
  * A more advanced React developer might be able to help put this where it should
  */
-const SUBSCRIBE_USER_RANDOM_CHANGES = gql`
+const SUBSCRIBE_USER_CHANGES = gql`
   subscription userChange {
     userChange {
       _id
+      username
     }
   }
 `;
 
-// const observer = client.subscribe({
-//   query: SUBSCRIBE_USER_RANDOM_CHANGES,
-// });
+const observer = client.subscribe({
+  query: SUBSCRIBE_USER_CHANGES,
+});
 
-// observer.subscribe({
-//   next() {
-//     // We _could_ do stuff with the new user here, but the UI will update automatically anyway!
-//   },
-// });
+observer.subscribe({
+  next() {
+    // We _could_ do stuff with the new user here, but the UI will update automatically anyway!
+  },
+});

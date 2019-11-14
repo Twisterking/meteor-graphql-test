@@ -6,14 +6,15 @@ import gql from 'graphql-tag';
 // https://github.com/jamiter/meteor-starter-kit/blob/master/imports/ui/App.js
 
 const App = (props) => {
-  console.log(props);
   const { loading, currentUser } = props;
   if(loading) return null;
+  console.log(currentUser);
   return (
     <div>
       <h1>Welcome to Meteor!</h1>
       <p>TEST</p>
       <h3>_id: {currentUser._id}</h3>
+      <h3>username: {currentUser.username}</h3>
     </div>
   )
 }
@@ -26,6 +27,7 @@ const GET_USER_DATA = gql`
         verified
       }
       _id
+      username
     }
   }
 `;

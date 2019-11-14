@@ -1,5 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
+import { PubSub } from 'graphql-subscriptions';
+// PROD: Later use https://github.com/davidyaha/graphql-redis-subscriptions
+
+export const pubsub = new PubSub();
+export const USER_CHANGE_CHANNEL = 'user_changed';
 
 export const typeDefs = [
   `
@@ -9,10 +14,14 @@ export const typeDefs = [
   }
   type User {
     emails: [Email]
-    _id: String
+    _id: String,
+    username: String
   }
   type Query {
     user: User
+  }  
+  type Subscription {
+    userChange: User
   }
 `
 ];
@@ -31,7 +40,21 @@ export const resolvers = {
       // }
     },
   },
+  Subscription: {
+    userChange: {
+      subscribe: () => pubsub.asyncIterator(USER_CHANGE_CHANNEL),
+    }
+  },
   // User: {
   //   emails: ({ emails }) => emails
   // }
 };
+
+Meteor.setInterval(
+  () => {
+    pubsub.publish(USER_CHANGE_CHANNEL, {
+      userChange: Meteor.users.findOne({ _id: 'seDueMBtGiuMCWez6' })
+    });
+  },
+  10000
+);
