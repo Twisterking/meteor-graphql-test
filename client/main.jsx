@@ -12,7 +12,7 @@ import App from '/imports/ui/App';
 
 const client = new ApolloClient({
   link: new DDPLink(),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache()
 });
 
 Meteor.startup(() => {
@@ -30,10 +30,10 @@ Meteor.startup(() => {
  * A more advanced React developer might be able to help put this where it should
  */
 const SUBSCRIBE_USER_CHANGES = gql`
-  subscription userChange {
+  subscription {
     userChange {
-      _id
-      username
+      event
+      doc
     }
   }
 `;
@@ -42,8 +42,8 @@ const observer = client.subscribe({
   query: SUBSCRIBE_USER_CHANGES,
 });
 
-observer.subscribe({
-  next() {
-    // We _could_ do stuff with the new user here, but the UI will update automatically anyway!
+const subscription = observer.subscribe({
+  next({ data }) {
+    console.log('DATA:', data);
   },
 });

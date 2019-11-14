@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { PubSub } from 'graphql-subscriptions';
+import { asyncIterator } from 'apollo-live-server';
+import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 // PROD: Later use https://github.com/davidyaha/graphql-redis-subscriptions
 
 export const pubsub = new PubSub();
@@ -20,13 +22,25 @@ export const typeDefs = [
   type Query {
     user: User
   }  
+  `,
+  // `
+  // type Subscription {
+  //   userChange: User
+  // }
+  // `
+  `
+  scalar JSON
   type Subscription {
-    userChange: User
+    userChange: SubscriptionEvent
   }
-`
+  type SubscriptionEvent {
+    event: String,
+    doc: JSON
+  }
+  `
 ];
 
-console.log('Schema STARTUP!');
+console.log('Server STARTUP!');
 
 export const resolvers = {
   Query: {
@@ -41,20 +55,31 @@ export const resolvers = {
     },
   },
   Subscription: {
+    // userChange: {
+    //   subscribe: () => pubsub.asyncIterator(USER_CHANGE_CHANNEL),
+    // }
+    // https://www.apollographql.com/docs/apollo-server/data/data/#context-argument
     userChange: {
-      subscribe: () => pubsub.asyncIterator(USER_CHANGE_CHANNEL),
+      resolve: payload => payload,
+      subscribe() {
+        // We assume that you inject `db` context with all your collections
+        // If you are using Meteor, db.notifications is an instance of Mongo.Collection
+        const observable = Meteor.users.find({ _id: 'seDueMBtGiuMCWez6' });
+        return asyncIterator(observable);
+      }
     }
   },
+  JSON: GraphQLJSON
   // User: {
   //   emails: ({ emails }) => emails
   // }
 };
 
-Meteor.setInterval(
-  () => {
-    pubsub.publish(USER_CHANGE_CHANNEL, {
-      userChange: Meteor.users.findOne({ _id: 'seDueMBtGiuMCWez6' })
-    });
-  },
-  10000
-);
+// Meteor.setInterval(
+//   () => {
+//     pubsub.publish(USER_CHANGE_CHANNEL, {
+//       userChange: Meteor.users.findOne({ _id: 'seDueMBtGiuMCWez6' })
+//     });
+//   },
+//   10000
+// );

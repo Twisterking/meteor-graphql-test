@@ -9,5 +9,5 @@ const schema = makeExecutableSchema({
 });
 
 createApolloServer({
-  schema,
+  schema
 });

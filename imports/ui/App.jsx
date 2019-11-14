@@ -32,7 +32,7 @@ const GET_USER_DATA = gql`
   }
 `;
 
-const withData = graphql(GET_USER_DATA, {
+export default graphql(GET_USER_DATA, {
   props: ({ data: { error, loading, user, refetch } }) => {
     if (loading) return { loading: true };
     if (error) {
@@ -44,6 +44,4 @@ const withData = graphql(GET_USER_DATA, {
       refetch
     };
   },
-});
-
-export default withData(App);
+})(App)
