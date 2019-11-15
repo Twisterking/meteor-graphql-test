@@ -10,6 +10,7 @@ export const USER_CHANGE_CHANNEL = 'user_changed';
 
 export const typeDefs = [
   `
+  scalar JSON
   type Email {
     address: String
     verified: Boolean
@@ -20,40 +21,24 @@ export const typeDefs = [
     username: String
   }
   type Query {
-    user: User
+    user(userId: ID): User
   }  
-  `,
-  // `
-  // type Subscription {
-  //   userChange: User
-  // }
-  // `
-  `
-  scalar JSON
+  type Subscription {
+    user(userId: ID): SubscriptionEvent
+  }
   type SubscriptionEvent {
     event: String,
     doc: JSON
   }
-  `,
-  `
-  type Subscription {
-    user: SubscriptionEvent
-  }
   `
 ];
 
-console.log('Server STARTUP!');
-
 export const resolvers = {
   Query: {
-    user(root, args, context) {
-      return Meteor.users.findOne({ _id: 'seDueMBtGiuMCWez6' });
-      // return {
-      //   _id: Random.id(),
-      //   emails: [
-      //     { address: 'hui@foobar.com', verified: true }
-      //   ]
-      // }
+    user(_, args, context) {
+      // console.log('QUERY', { _, args, context });
+      const { userId } = args;
+      return Meteor.users.findOne({ _id: userId });
     },
   },
   Subscription: {
@@ -70,8 +55,10 @@ export const resolvers = {
     // }
     user: {
       resolve: payload => payload,
-      subscribe() {
-        const observable = Meteor.users.find({ _id: 'seDueMBtGiuMCWez6' });
+      subscribe(_, args, context) {
+        // console.log('SUBSCRIPTION', { _, args, context });
+        const { userId } = args;
+        const observable = Meteor.users.find({ _id: userId });
         return asyncIterator(observable);
       }
     }

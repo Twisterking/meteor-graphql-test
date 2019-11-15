@@ -21,8 +21,8 @@ class TestHoc extends React.Component {
 }           
 
 const GET_USER_DATA = gql`
-  query getCurrentUser {
-    user {
+  query getUser($userId: ID) {
+    user(userId: $userId) {
       emails {
         address
         verified
@@ -34,6 +34,7 @@ const GET_USER_DATA = gql`
 `;
 
 export default graphql(GET_USER_DATA, {
+  variables: { userId: 'seDueMBtGiuMCWez6' },
   props: ({ data: { error, loading, user, refetch } }) => {
     if (loading) return { loading: true };
     if (error) {

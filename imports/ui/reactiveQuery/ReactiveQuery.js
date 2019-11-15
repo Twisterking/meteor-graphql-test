@@ -36,10 +36,12 @@ export default class ReactiveQuery extends React.Component {
 class Subscription extends React.Component {
   componentDidMount = () => {
     const { subscribeToMore, subscription, variables } = this.props;
+    console.log('variables', variables);
     subscribeToMore({
       document: subscription,
       variables: variables,
       updateQuery: (prev, { subscriptionData }) => {
+        // console.log('subscriptionData', subscriptionData);
         if (!subscriptionData.data) return prev;
 
         const storeName = Object.keys(subscriptionData.data)[0];

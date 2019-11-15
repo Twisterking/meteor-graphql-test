@@ -5,8 +5,8 @@ import gql from 'graphql-tag';
 import { ReactiveQuery } from './reactiveQuery/index';
 
 const GET_USER_DATA = gql`
-  query getCurrentUser {
-    user {
+  query getUser($userId: ID) {
+    user(userId: $userId) {
       emails {
         address
         verified
@@ -17,18 +17,9 @@ const GET_USER_DATA = gql`
   }
 `;
 
-// const SUBSCRIBE_USER_CHANGES = gql`
-//   subscription {
-//     userChange {
-//       event
-//       doc
-//     }
-//   }
-// `;
-
 const SUBSCRIBE_USER_CHANGES = gql`
-  subscription {
-    user {
+  subscription subUser($userId: ID) {
+    user(userId: $userId) {
       event
       doc
     }
@@ -39,6 +30,7 @@ export default props => (
   <ReactiveQuery
     query={GET_USER_DATA}
     subscription={SUBSCRIBE_USER_CHANGES}
+    variables={{ userId: 'CYzjtN3TaWB9KQJAP' }}
   >
     {(props) => {
       // console.log('PROPS:', props);

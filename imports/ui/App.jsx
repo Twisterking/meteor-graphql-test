@@ -1,14 +1,17 @@
 import React from 'react';
+import Hook from './Hook';
 import TestHoc from './TestHoc';
-import Standard from './Standard';
+import Reactive from './Reactive';
 
 export default (props) => {
   return (
     <div>
       <h1>GraphQL/Apollo TEST</h1>
-      <TestHoc />
+      <Hook />
       <hr/>
-      <Standard />
+      {/* <TestHoc /> */}
+      {/* <hr/> */}
+      <Reactive />
     </div>
   )
 }
