@@ -15,6 +15,7 @@
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.13",
     "apollo-link-ddp": "^2.1.0",
+    "apollo-live-client": "^0.2.1",
     "apollo-live-server": "^0.2.2",
     "async": "^3.1.0",
     "bcrypt": "^3.0.6",

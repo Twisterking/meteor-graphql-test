@@ -10,7 +10,7 @@ import { ApolloProvider } from 'react-apollo';
 
 import App from '/imports/ui/App';
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   link: new DDPLink(),
   cache: new InMemoryCache()
 });
@@ -37,13 +37,11 @@ const SUBSCRIBE_USER_CHANGES = gql`
     }
   }
 `;
-
 const observer = client.subscribe({
   query: SUBSCRIBE_USER_CHANGES,
 });
-
 const subscription = observer.subscribe({
   next({ data }) {
-    console.log('DATA:', data);
+    console.log('main.jsx Subscription data:', data);
   },
 });

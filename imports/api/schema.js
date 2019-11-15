@@ -62,8 +62,6 @@ export const resolvers = {
     userChange: {
       resolve: payload => payload,
       subscribe() {
-        // We assume that you inject `db` context with all your collections
-        // If you are using Meteor, db.notifications is an instance of Mongo.Collection
         const observable = Meteor.users.find({ _id: 'seDueMBtGiuMCWez6' });
         return asyncIterator(observable);
       }
