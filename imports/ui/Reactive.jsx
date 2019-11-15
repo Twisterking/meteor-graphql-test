@@ -1,9 +1,10 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-// import { ReactiveQuery } from 'apollo-live-client';
-import { ReactiveQuery } from './reactiveQuery/index';
+import { ReactiveQuery } from 'apollo-live-client';
+// import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
+// SUBSCRIPTION HAS TO HAVE SAME NAME AS QUERY!!! ("user")
 const GET_USER_DATA = gql`
   query getUser($userId: ID) {
     user(userId: $userId) {
@@ -17,6 +18,7 @@ const GET_USER_DATA = gql`
   }
 `;
 
+// SUBSCRIPTION HAS TO HAVE SAME NAME AS QUERY!!! ("user")
 const SUBSCRIBE_USER_CHANGES = gql`
   subscription subUser($userId: ID) {
     user(userId: $userId) {
@@ -45,11 +47,11 @@ export default props => (
 class Show extends React.Component {
   render() {
     const { currentUser, refetch } = this.props;
-    console.log('STANDARD:', currentUser);
+    // console.log('STANDARD:', currentUser);
     return (
       <div>
-        <h3>STANDARD: _id: {currentUser._id}</h3>
-        <h3>STANDARD: username: {currentUser.username}</h3>
+        <h5>STANDARD: _id: {currentUser._id}</h5>
+        <h5>STANDARD: username: {currentUser.username}</h5>
         {/* <button onClick={e => refetch()}>refetch</button> */}
       </div>
     )

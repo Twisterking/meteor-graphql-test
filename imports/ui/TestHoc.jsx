@@ -1,7 +1,8 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-// not working!
+
+// not working! - but has to work to use a subscription here with the HOC
 import { client } from '/client/main.jsx';
 
 // https://github.com/jamiter/meteor-starter-kit/blob/master/imports/ui/App.js
@@ -13,8 +14,8 @@ class TestHoc extends React.Component {
     console.log('HOC:', currentUser);
     return (
       <div>
-        <h3>HOC: _id: {currentUser._id}</h3>
-        <h3>HOC: username: {currentUser.username}</h3>
+        <h5>HOC: _id: {currentUser._id}</h5>
+        <h5>HOC: username: {currentUser.username}</h5>
       </div>
     )
   }
@@ -48,6 +49,7 @@ export default graphql(GET_USER_DATA, {
   },
 })(TestHoc)
 
+// broken because of missing "client"
 // const SUBSCRIBE_USER_CHANGES = gql`
 //   subscription {
 //     userChange {

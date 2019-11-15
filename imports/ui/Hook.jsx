@@ -24,11 +24,11 @@ export default props => {
   });
   if(loading) return null;
   const currentUser = data.user;
-  console.log('HOOK:', currentUser);
+  // console.log('HOOK:', currentUser);
   return (
     <div>
-      <h3>HOOK: _id: {currentUser._id}</h3>
-      <h3>HOOK: username: {currentUser.username}</h3>
+      <h5>HOOK: _id: {currentUser._id}</h5>
+      <h5>HOOK: username: {currentUser.username}</h5>
     </div>
   )
 }

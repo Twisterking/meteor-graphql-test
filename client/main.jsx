@@ -30,19 +30,19 @@ Meteor.startup(() => {
  * A more advanced React developer might be able to help put this where it should
  */
 
-// const SUBSCRIBE_USER_CHANGES = gql`
-//   subscription {
-//     user {
-//       event
-//       doc
-//     }
-//   }
-// `;
-// const observer = client.subscribe({
-//   query: SUBSCRIBE_USER_CHANGES,
-// });
-// const subscription = observer.subscribe({
-//   next({ data }) {
-//     console.log('main.jsx Subscription data:', data);
-//   },
-// });
+const SUBSCRIBE_USER_CHANGES = gql`
+  subscription {
+    user {
+      event
+      doc
+    }
+  }
+`;
+const observer = client.subscribe({
+  query: SUBSCRIBE_USER_CHANGES,
+});
+const subscription = observer.subscribe({
+  next({ data }) {
+    console.log('main.jsx Subscription data:', data);
+  },
+});
