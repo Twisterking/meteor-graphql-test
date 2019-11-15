@@ -32,14 +32,6 @@ Meteor.startup(() => {
 
 // const SUBSCRIBE_USER_CHANGES = gql`
 //   subscription {
-//     userChange {
-//       event
-//       doc
-//     }
-//   }
-// `;
-// const SUBSCRIBE_USER_CHANGES = gql`
-//   subscription {
 //     user {
 //       event
 //       doc

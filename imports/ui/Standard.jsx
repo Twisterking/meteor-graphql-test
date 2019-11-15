@@ -53,12 +53,12 @@ export default props => (
 class Show extends React.Component {
   render() {
     const { currentUser, refetch } = this.props;
-    // console.log('STANDARD:', currentUser);
+    console.log('STANDARD:', currentUser);
     return (
       <div>
         <h3>STANDARD: _id: {currentUser._id}</h3>
         <h3>STANDARD: username: {currentUser.username}</h3>
-        <button onClick={e => refetch()}>refetch</button>
+        {/* <button onClick={e => refetch()}>refetch</button> */}
       </div>
     )
   }

@@ -10,7 +10,7 @@ class TestHoc extends React.Component {
   render() {
     const { loading, currentUser } = this.props;
     if(loading) return null;
-    // console.log('HOC:', currentUser);
+    console.log('HOC:', currentUser);
     return (
       <div>
         <h3>HOC: _id: {currentUser._id}</h3>
@@ -43,7 +43,7 @@ export default graphql(GET_USER_DATA, {
     return {
       currentUser: user,
       refetch
-    };
+    }
   },
 })(TestHoc)
 
