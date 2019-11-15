@@ -30,12 +30,14 @@ export const typeDefs = [
   // `
   `
   scalar JSON
-  type Subscription {
-    userChange: SubscriptionEvent
-  }
   type SubscriptionEvent {
     event: String,
     doc: JSON
+  }
+  `,
+  `
+  type Subscription {
+    user: SubscriptionEvent
   }
   `
 ];
@@ -59,7 +61,14 @@ export const resolvers = {
     //   subscribe: () => pubsub.asyncIterator(USER_CHANGE_CHANNEL),
     // }
     // https://www.apollographql.com/docs/apollo-server/data/data/#context-argument
-    userChange: {
+    // userChange: {
+    //   resolve: payload => payload,
+    //   subscribe() {
+    //     const observable = Meteor.users.find({ _id: 'seDueMBtGiuMCWez6' });
+    //     return asyncIterator(observable);
+    //   }
+    // }
+    user: {
       resolve: payload => payload,
       subscribe() {
         const observable = Meteor.users.find({ _id: 'seDueMBtGiuMCWez6' });
