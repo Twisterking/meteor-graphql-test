@@ -51,10 +51,10 @@ export default class Itemlist extends React.Component {
       >
         {(props) => {
           const { data, error, loading, refetch } = props;
-          if(loading) return null;
-          if(error) { console.error(error); return null; }
+          // https://docs.meteor.com/api/connections.html#Meteor-status
+          const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
+          if(loading && connected) return <h5>LOADING ...</h5>;
           const items = data.listbody;
-          console.log('items', items);
           return (
             <div className="list-container container">
               <div className="flex">
@@ -62,17 +62,22 @@ export default class Itemlist extends React.Component {
                 Seite {this.state.page}
                 <button onClick={this.nextPage}>&gt;</button>
               </div>
-              <ul>
-                {_.orderBy(items, ['row_id'], ['asc']).map(item => (
-                  <li key={item._id}>
-                    @{item.row_id}: {item._id} - {item.itemId}
-                  </li>
-                ))}
-              </ul>
+              { error ? <h2>ERROR!</h2> : (
+                <ul>
+                  {_.orderBy(items, ['row_id'], ['asc']).map(item => (
+                    <li key={item._id}>
+                      @{item.row_id}: {item._id} - {item.itemId}
+                    </li>
+                  ))}
+                </ul>
+              ) }
               <div className="flex">
                 <button onClick={this.prevPage}>&lt;</button>
                 Seite {this.state.page}
                 <button onClick={this.nextPage}>&gt;</button>
+              </div>
+              <div className="flex _center mt">
+                <button onClick={e => refetch()}>REFETCH</button>
               </div>
             </div>
           )

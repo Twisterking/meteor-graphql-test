@@ -73,6 +73,7 @@ export const resolvers = {
         return asyncIterator(observable);
       }
     },
+    // https://github.com/Swydo/ddp-apollo#setting-up-pubsub
     listbody: {
       resolve: payload => payload,
       subscribe(_, args, context) {

@@ -3,6 +3,13 @@ body {
   font-family: sans-serif;
 }
 
+.mt {
+  margin-top: 20px;
+}
+.mb {
+  margin-bottom: 20px;
+}
+
 .container {
   width: 100%;
   max-width: 800px;
@@ -13,4 +20,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.flex._center {
+  justify-content: center;
 }

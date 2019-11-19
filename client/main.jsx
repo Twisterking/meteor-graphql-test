@@ -7,6 +7,7 @@ import ApolloClient from 'apollo-client';
 // import { OfflineClient } from 'offix-client';
 import { DDPLink } from 'meteor/swydo:ddp-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { persistCache } from 'apollo-cache-persist';
 import { ApolloProvider } from 'react-apollo';
 
 import App from '/imports/ui/App';
@@ -19,6 +20,11 @@ import App from '/imports/ui/App';
 // });
 // export let client;
 
+// Persistent Cache:
+const cache = new InMemoryCache()
+const storage = window.localStorage
+const waitOnCache = persistCache({ cache, storage });
+
 // NORMAL:
 export const client = new ApolloClient({
   link: new DDPLink(),
@@ -29,6 +35,8 @@ window.client = client;
 Meteor.startup(async () => {
   // client = await offlineClient.init();
   // console.log('APOLLO CLIENT:', client);
+  // persistent:
+  await waitOnCache;
   render(
     <ApolloProvider client={client}>
       <App />
