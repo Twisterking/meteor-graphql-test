@@ -28,11 +28,11 @@ export const typeDefs = [
   }
   type Query {
     user(userId: ID): User
-    listbody(listId: ID): [ListElement]
+    listbody(listId: ID, limit: Int, skip: Int): [ListElement]
   }  
   type Subscription {
     user(userId: ID): SubscriptionEvent
-    listbody(listId: ID): SubscriptionEvent
+    listbody(listId: ID, limit: Int, skip: Int): SubscriptionEvent
   }
   type SubscriptionEvent {
     event: String,
@@ -49,9 +49,9 @@ export const resolvers = {
       return Meteor.users.findOne({ _id: userId });
     },
     listbody(_, args, context) {
-      // console.log('QUERY', { _, args, context });
-      const { listId } = args;
-      return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } }).fetch();
+      // console.log('QUERY', args);
+      const { listId, limit, skip } = args;
+      return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
     }
   },
   Subscription: {
@@ -78,8 +78,10 @@ export const resolvers = {
     listbody: {
       resolve: payload => payload,
       subscribe(_, args, context) {
-        // console.log('SUBSCRIPTION', { _, args, context });
-        const { listId } = args;
+        // console.log('SUBSCRIPTION', args);
+        const { listId, limit, skip } = args;
+        // NOT WORKING! Subscriptions have to subscribe "the whole body"
+        // const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip });
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
