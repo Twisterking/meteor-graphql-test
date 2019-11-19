@@ -33,6 +33,7 @@ export default class Itemlist extends React.Component {
     }
   }
   prevPage = () => {
+    if(this.state.page == 1) return;
     this.setState({ page: this.state.page - 1 });
   }
   nextPage = () => {
@@ -56,6 +57,11 @@ export default class Itemlist extends React.Component {
           console.log('items', items);
           return (
             <div className="list-container container">
+              <div className="flex">
+                <button onClick={this.prevPage}>&lt;</button>
+                Seite {this.state.page}
+                <button onClick={this.nextPage}>&gt;</button>
+              </div>
               <ul>
                 {_.orderBy(items, ['row_id'], ['asc']).map(item => (
                   <li key={item._id}>

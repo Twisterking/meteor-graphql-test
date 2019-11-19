@@ -44,7 +44,6 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     user(_, args, context) {
-      // console.log('QUERY', { _, args, context });
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },
@@ -69,7 +68,6 @@ export const resolvers = {
     user: {
       resolve: payload => payload,
       subscribe(_, args, context) {
-        // console.log('SUBSCRIPTION', { _, args, context });
         const { userId } = args;
         const observable = Meteor.users.find({ _id: userId });
         return asyncIterator(observable);
@@ -80,7 +78,7 @@ export const resolvers = {
       subscribe(_, args, context) {
         // console.log('SUBSCRIPTION', args);
         const { listId, limit, skip } = args;
-        // NOT WORKING! Subscriptions have to subscribe "the whole body"
+        // NOT WORKING! Subscriptions have to subscribe "the whole body":
         // const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip });
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
@@ -88,16 +86,4 @@ export const resolvers = {
     }
   },
   JSON: GraphQLJSON
-  // User: {
-  //   emails: ({ emails }) => emails
-  // }
-};
-
-// Meteor.setInterval(
-//   () => {
-//     pubsub.publish(USER_CHANGE_CHANNEL, {
-//       userChange: Meteor.users.findOne({ _id: 'seDueMBtGiuMCWez6' })
-//     });
-//   },
-//   10000
-// );
+}
