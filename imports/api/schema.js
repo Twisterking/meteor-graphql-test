@@ -54,17 +54,17 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     user(_, args, context) {
-      console.log('QUERY USER!');
+      // console.log('QUERY USER!');
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },
     listbody(_, args, context) {
-      console.log('QUERY 11', args);
+      // console.log('QUERY 11', args);
       const { listId, limit, skip } = args;
       return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
     },
     openorderbody(_, args, context) {
-      console.log('QUERY 22', args);
+      // console.log('QUERY 22', args);
       const { groupId } = args;
       let headId = null;
       let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
@@ -78,6 +78,7 @@ export const resolvers = {
         });
       }
       if(!headId && openOrderHead) headId = openOrderHead._id;
+      console.log('openOrderId:', headId);
       return OpenOrdersBody.find({ list_id: headId }, { sort: { row_id: 1 } }).fetch();
     },
   },
@@ -105,10 +106,8 @@ export const resolvers = {
     listbody: {
       resolve: payload => payload,
       subscribe(_, args, context) {
-        console.log('SUBSCRIPTION 11', args);
         const { listId, limit, skip } = args;
         // NOT WORKING! Subscriptions have to subscribe "the whole body":
-        // const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip });
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
@@ -116,7 +115,6 @@ export const resolvers = {
     openorderbody: {
       resolve: payload => payload,
       subscribe(_, args, context) {
-        console.log('SUBSCRIPTION 22', args);
         const { groupId } = args;
         let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
         if(!openOrderHead) return;
