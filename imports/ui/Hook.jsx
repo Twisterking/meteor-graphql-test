@@ -24,7 +24,6 @@ export default props => {
   });
   if(loading) return null;
   const currentUser = data.user;
-  // console.log('HOOK:', currentUser);
   return (
     <div>
       <h5>HOOK: _id: {currentUser._id}</h5>

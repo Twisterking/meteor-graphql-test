@@ -39,6 +39,10 @@ export default class Itemlist extends React.Component {
   nextPage = () => {
     this.setState({ page: this.state.page + 1 });
   }
+  addToCart = itemId => e => {
+    const groupId = '363SQib5kzShKmYo2';
+    return console.log({ groupId, itemId });
+  }
   render() {
     const {page} = this.state;
     const variables = { listId: this.props.listId, limit: 20, skip: (page-1)*20 };
@@ -56,7 +60,7 @@ export default class Itemlist extends React.Component {
           if(loading && connected) return <h5>LOADING ...</h5>;
           const items = data.listbody;
           return (
-            <div className="list-container container">
+            <div className="list-container">
               <div className="flex">
                 <button onClick={this.prevPage}>&lt;</button>
                 Seite {this.state.page}
@@ -66,7 +70,7 @@ export default class Itemlist extends React.Component {
                 <ul>
                   {_.orderBy(items, ['row_id'], ['asc']).map(item => (
                     <li key={item._id}>
-                      @{item.row_id}: {item._id} - {item.itemId}
+                      <button onClick={this.addToCart(item.itemId)}>+</button> @{item.row_id}: {item._id} - {item.itemId}
                     </li>
                   ))}
                 </ul>

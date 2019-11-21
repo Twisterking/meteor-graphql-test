@@ -4,7 +4,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 
 import ApolloClient from 'apollo-client';
-// import { OfflineClient } from 'offix-client';
+import { OfflineClient } from 'offix-client';
 import { DDPLink } from 'meteor/swydo:ddp-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';

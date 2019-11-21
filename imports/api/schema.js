@@ -3,7 +3,7 @@ import { Random } from 'meteor/random';
 import { PubSub } from 'graphql-subscriptions';
 import { asyncIterator } from 'apollo-live-server';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
-import { ListsHead, ListsBody } from '/imports/db';
+import { Groups, ListsHead, ListsBody, OpenOrdersHead, OpenOrdersBody } from '/imports/db';
 // PROD: Later use https://github.com/davidyaha/graphql-redis-subscriptions
 
 export const pubsub = new PubSub();
@@ -26,13 +26,23 @@ export const typeDefs = [
     row_id: Int,
     itemId: ID
   }
+  type OpenOrderElement {
+    _id: ID,
+    row_id: Int,
+    itemId: ID,
+    unit: String,
+    item_amount: Float,
+    total_price: Float
+  }
   type Query {
     user(userId: ID): User
     listbody(listId: ID, limit: Int, skip: Int): [ListElement]
+    openorderbody(groupId: ID): [OpenOrderElement]
   }  
   type Subscription {
     user(userId: ID): SubscriptionEvent
     listbody(listId: ID, limit: Int, skip: Int): SubscriptionEvent
+    openorderbody(groupId: ID): SubscriptionEvent
   }
   type SubscriptionEvent {
     event: String,
@@ -44,14 +54,32 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     user(_, args, context) {
+      console.log('QUERY USER!');
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },
     listbody(_, args, context) {
-      // console.log('QUERY', args);
+      console.log('QUERY 11', args);
       const { listId, limit, skip } = args;
       return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
-    }
+    },
+    openorderbody(_, args, context) {
+      console.log('QUERY 22', args);
+      const { groupId } = args;
+      let headId = null;
+      let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
+      if(!openOrderHead) {
+        const group = Groups.findOne({ _id: groupId });
+        headId = OpenOrdersHead.insert({   
+          group_id: groupId,
+          supplier_id: group.supplierId,
+          delivery_method: 'shipping',
+          datetime: new Date
+        });
+      }
+      if(!headId && openOrderHead) headId = openOrderHead._id;
+      return OpenOrdersBody.find({ list_id: headId }, { sort: { row_id: 1 } }).fetch();
+    },
   },
   Subscription: {
     // userChange: {
@@ -77,11 +105,22 @@ export const resolvers = {
     listbody: {
       resolve: payload => payload,
       subscribe(_, args, context) {
-        // console.log('SUBSCRIPTION', args);
+        console.log('SUBSCRIPTION 11', args);
         const { listId, limit, skip } = args;
         // NOT WORKING! Subscriptions have to subscribe "the whole body":
         // const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip });
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
+        return asyncIterator(observable);
+      }
+    },
+    openorderbody: {
+      resolve: payload => payload,
+      subscribe(_, args, context) {
+        console.log('SUBSCRIPTION 22', args);
+        const { groupId } = args;
+        let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
+        if(!openOrderHead) return;
+        const observable = OpenOrdersBody.find({ list_id: openOrderHead._id }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
     }
