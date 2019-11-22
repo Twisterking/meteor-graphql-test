@@ -24,11 +24,28 @@ const SUB_LIST_DATA = gql`
   }
 `;
 
+// GET CART DATA
+const GET_CART_DATA = gql`
+  query getOpenOrder($groupId: ID) {
+    openorderbody(groupId: $groupId) {
+      _id
+      row_id
+      itemId,
+      item_amount,
+      unit
+    }
+  }
+`;
+
 // MUTATIONS - https://www.apollographql.com/docs/react/data/mutations/
 const ADD_TO_CART = gql`
   mutation AddToCart($openOrderId: ID, $itemId: ID, $amount: Float, $unit: String) {
     addToCart(openOrderId: $openOrderId, itemId: $itemId, amount: $amount, unit: $unit) {
-      success
+      _id
+      row_id
+      itemId,
+      item_amount,
+      unit
     }
   }
 `;
@@ -43,7 +60,18 @@ export default (props) => {
   const nextPage = () => {
     setPage(page + 1);
   }
-  const [addToCart, { data }] = useMutation(ADD_TO_CART);
+  // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
+  const [addToCart, { data }] = useMutation(ADD_TO_CART, {
+    update(cache, { data: { addToCart } }) {
+      // console.log('addToCart', addToCart);
+      const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: '363SQib5kzShKmYo2' } });
+      console.log('openorderbody', openorderbody);
+      // cache.writeQuery({
+      //   query: GET_CART_DATA,
+      //   data: { openorderbody: openorderbody.concat([addToCart]) },
+      // });
+    }
+  });
   const doAddToCart = itemId => e => {
     const groupId = '363SQib5kzShKmYo2';
     const openOrderId = 'aqMMFbWYu6zary74i';

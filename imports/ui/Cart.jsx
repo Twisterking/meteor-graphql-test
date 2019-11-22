@@ -36,7 +36,7 @@ export default (props) => {
     >
       {(props) => {
         const { data, error, loading, refetch } = props;
-        console.log('CART DATA', data);
+        // console.log('CART DATA', data);
         // https://docs.meteor.com/api/connections.html#Meteor-status
         const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
         if(loading && connected) return <h5>LOADING ...</h5>;

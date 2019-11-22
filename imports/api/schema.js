@@ -52,7 +52,7 @@ export const typeDefs = [
     success: Boolean
   }
   type Mutation {
-    addToCart(openOrderId: ID, itemId: ID, amount: Float, unit: String): MutationSuccess
+    addToCart(openOrderId: ID, itemId: ID, amount: Float, unit: String): OpenOrderElement
   }
   `
 ];
@@ -84,7 +84,7 @@ export const resolvers = {
         });
       }
       if(!headId && openOrderHead) headId = openOrderHead._id;
-      console.log('openOrderId:', headId);
+      // console.log('openOrderId:', headId);
       return OpenOrdersBody.find({ list_id: headId }, { sort: { row_id: 1 } }).fetch();
     },
   },
@@ -121,7 +121,6 @@ export const resolvers = {
     openorderbody: {
       resolve: payload => {
         payload.doc.__typename == 'OpenOrderElement';
-        console.log('payload 111', payload);
         return payload
       },
       subscribe(_, args, context) {
@@ -137,14 +136,15 @@ export const resolvers = {
     addToCart(_, args, context) {
       const { openOrderId, itemId, amount, unit } = args;
       const lastOOItem = OpenOrdersBody.findOne({ list_id: openOrderId }, { sort: { row_id: -1 } });
-      OpenOrdersBody.insert({
+      const newBodyItem = {
         list_id: openOrderId,
         itemId,
         item_amount: amount,
         unit: unit || undefined,
         row_id: lastOOItem.row_id + 1
-      });
-      return { success: true }
+      };
+      newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
+      return newBodyItem
     }
   },
   JSON: GraphQLJSON
