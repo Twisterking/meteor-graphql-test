@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Hook from './Hook';
 import TestHoc from './TestHoc';
 import Reactive from './Reactive';
@@ -55,7 +55,7 @@ function logout(e) {
 }
 
 export default (props) => {
-  // console.log('Meteor.user()', Meteor.user());
+  const [rand, setRand] = useState(_.random(1,1000));
   return (
     <div>
       <div className="flex center">
@@ -86,7 +86,8 @@ export default (props) => {
           </div>
           <div>
             <h4>withTracker(): Groups:</h4>
-            <GroupsFromSub />
+            <GroupsFromSub rand={rand} />
+            <button onClick={e => setRand(_.random(1,1000))}>Refresh</button>
           </div>
         </div>
       </div>

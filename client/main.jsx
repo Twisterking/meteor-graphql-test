@@ -14,6 +14,8 @@ import { ApolloProvider } from 'react-apollo';
 
 import App from '/imports/ui/App';
 
+_ = require('lodash');
+
 // OFFIX:
 // https://offix.dev/docs/client-configuration
 // const offlineClient = new OfflineClient({

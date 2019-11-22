@@ -1,3 +1,4 @@
+import { Tracker } from 'meteor/tracker';
 import { Items } from './items';
 import { Groups } from './groups';
 import { ListsHead, ListsBody } from './lists';
@@ -14,9 +15,13 @@ export {
 
 if(Meteor.isClient) {
   [Groups].forEach(collection => {
-    console.log(collection);
+    // https://github.com/Twisterking/grounddb/tree/master
+    const groundColl = new Ground.Collection(`_${collection._name}`);
+    groundColl.observeSource(collection.find({}));
     ['find', 'findOne'].forEach(method => {
-
+      if(Tracker.nonreactive(() => Meteor.status().status == "offline")) {
+        collection[method] = groundColl[method];
+      }
     });
   });
 }
