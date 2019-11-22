@@ -3,11 +3,21 @@ body {
   font-family: sans-serif;
 }
 
+button.bigger, a.button.bigger {
+  padding: 1em 1.5em;
+}
+
 .mt {
   margin-top: 20px;
 }
 .mb {
   margin-bottom: 20px;
+}
+.ml {
+  margin-left: 20px;
+}
+.mr {
+  margin-right: 20px;
 }
 
 .container {
@@ -20,6 +30,9 @@ body {
   display: flex;
   align-items: top;
   justify-content: space-between;
+}
+.flex.center {
+  align-items: center;
 }
 .flex._center {
   justify-content: center;

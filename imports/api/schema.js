@@ -48,6 +48,12 @@ export const typeDefs = [
     event: String,
     doc: JSON
   }
+  type MutationSuccess {
+    success: Boolean
+  }
+  type Mutation {
+    addToCart(openOrderId: ID, itemId: ID, amount: Float, unit: String): MutationSuccess
+  }
   `
 ];
 
@@ -121,6 +127,12 @@ export const resolvers = {
         const observable = OpenOrdersBody.find({ list_id: openOrderHead._id }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
+    }
+  },
+  Mutation: {
+    addToCart(_, args, context) {
+      console.log('addToCart()', args, context);
+      return { success: true }
     }
   },
   JSON: GraphQLJSON

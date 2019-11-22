@@ -28,8 +28,7 @@ const SUB_LIST_DATA = gql`
 const ADD_TO_CART = gql`
   mutation AddToCart($openOrderId: ID, $itemId: ID, $amount: Float, $unit: String) {
     addToCart(openOrderId: $openOrderId, itemId: $itemId, amount: $amount, unit: $unit) {
-      id
-      type
+      success
     }
   }
 `;

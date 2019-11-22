@@ -36,17 +36,49 @@ function testLatency(cb) {
 //   });
 // }, 3000);
 
+function login(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  Meteor.loginWithPassword(formData.get('login'), formData.get('password'), (error) => {
+    if(error) return console.error(error);
+    console.log('LOGGED IN!');
+  });
+}
+
 export default (props) => {
   return (
     <div>
-      <h1>GraphQL/Apollo TEST</h1>
+      <div className="flex center">
+        <h1>Apollo Playground</h1>
+        <div>
+          <form className="flex" onSubmit={login}>
+            <input type="text" placeholder="Login" id="login" name="login" />
+            <input type="password" placeholder="Password" id="password" name="password" />
+            <button type="submit">LOGIN</button>
+            <button type="button" onClick={e => Meteor.logout()}>LOGOUT</button>
+          </form>
+        </div>
+        <div>
+          <button className="bigger mr" onClick={e => Meteor.disconnect()}>Disconnect</button>
+          <button className="bigger" onClick={e => Meteor.reconnect()}>Connect</button>
+        </div>
+      </div>
       <div>
         <h3>User Subs</h3>
-        <Hook />
-        {/* <hr/>
-        <TestHoc /> */}
-        <hr/>
-        <Reactive />
+        <div className="flex">
+          <div>
+            <h4>HOOK:</h4>
+            <Hook />
+          </div>
+          <div>
+            <h4>ReactiveQuery</h4>
+            <Reactive />
+          </div>
+          <div>
+            <h4>withTracker()</h4>
+            <h5>TODO!</h5>
+          </div>
+        </div>
       </div>
       <hr/>
       <div className="flex mt">
