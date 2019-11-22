@@ -121,8 +121,7 @@ export const resolvers = {
     },
     openorderbody: {
       resolve: payload => {
-        payload.doc.__typename = 'OpenOrderElement';
-        // console.log('payload!', JSON.stringify(payload.doc, false, 2));
+        payload.doc.__typename = 'OpenOrderElement'; // no idea why I need this for the sub
         return payload
       },
       subscribe(_, args, context) {
@@ -146,7 +145,6 @@ export const resolvers = {
         row_id: lastOOItem.row_id + 1
       };
       newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
-      newBodyItem.__typename == 'OpenOrderElement';
       return newBodyItem
     }
   },

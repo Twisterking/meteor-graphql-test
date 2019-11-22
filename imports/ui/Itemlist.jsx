@@ -66,18 +66,17 @@ export default (props) => {
     update(cache, { data: { addToCart } }) {
       // console.log('addToCart', addToCart);
       const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: '363SQib5kzShKmYo2' } });
-      console.log('openorderbody', openorderbody);
-      // cache.writeQuery({
-      //   query: GET_CART_DATA,
-      //   data: { openorderbody: openorderbody.concat([addToCart]) },
-      // });
+      cache.writeQuery({
+        query: GET_CART_DATA,
+        data: { openorderbody: openorderbody.concat([addToCart]) },
+      });
     }
   });
   const doAddToCart = itemId => e => {
     const groupId = '363SQib5kzShKmYo2';
     const openOrderId = 'aqMMFbWYu6zary74i';
-    console.log({ groupId, itemId });
-    addToCart({ variables: { openOrderId, itemId, amount: 5, unit: "KGM" } });
+    const units = ['kg', 'Stk', 'KRT', 'Pkg'];
+    addToCart({ variables: { openOrderId, itemId, amount: _.random(1, 20), unit: units[Math.floor(Math.random() * units.length)] } });
   }
 
   const variables = { listId: props.listId, limit: 20, skip: (page-1)*20 };

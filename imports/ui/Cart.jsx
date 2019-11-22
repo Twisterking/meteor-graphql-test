@@ -1,8 +1,8 @@
 import React from 'react';
 import gql from 'graphql-tag';
-// import { ReactiveQuery } from 'apollo-live-client';
+import { ReactiveQuery } from 'apollo-live-client';
 import _ from 'lodash';
-import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
+// import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
 const GET_CART_DATA = gql`
   query getOpenOrder($groupId: ID) {
@@ -41,14 +41,14 @@ export default (props) => {
         const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
         if(loading && connected) return <h5>LOADING ...</h5>;
         const items = data.openorderbody;
-        console.log('CART ITEMS', items);
+        // console.log('CART ITEMS', items);
         return (
           <div className="list-container">
             { error ? <h2>ERROR!</h2> : (
               <ul>
                 {_.orderBy(items, ['row_id'], ['asc']).map(item => (
                   <li key={item._id}>
-                    @{item.row_id}: {item.itemId} - {item.unit}
+                    @{item.row_id}: {item.itemId} - {item.item_amount}x {item.unit}
                   </li>
                 ))}
               </ul>
