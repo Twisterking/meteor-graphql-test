@@ -55,7 +55,7 @@ function logout(e) {
 }
 
 export default (props) => {
-  console.log('Meteor.user()', Meteor.user());
+  // console.log('Meteor.user()', Meteor.user());
   return (
     <div>
       <div className="flex center">

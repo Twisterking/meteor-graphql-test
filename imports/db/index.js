@@ -11,3 +11,9 @@ export {
   OpenOrdersHead,
   OpenOrdersBody
 }
+
+if(Meteor.isClient) {
+  [Groups].forEach(collection => {
+    console.log(collection);
+  });
+}
