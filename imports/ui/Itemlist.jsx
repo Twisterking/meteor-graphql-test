@@ -92,6 +92,7 @@ export default (props) => {
         // https://docs.meteor.com/api/connections.html#Meteor-status
         const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
         if(loading && connected) return <h5>LOADING ...</h5>;
+        if(!data) return <h5>No Data</h5>
         const items = data.listbody;
         return (
           <div className="list-container">

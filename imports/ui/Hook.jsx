@@ -26,8 +26,8 @@ export default props => {
   const currentUser = data.user;
   return (
     <div>
-      <h5>HOOK: _id: {currentUser._id}</h5>
-      <h5>HOOK: username: {currentUser.username}</h5>
+      <h5>_id: {currentUser._id}</h5>
+      <h5>username: {currentUser.username}</h5>
     </div>
   )
 }

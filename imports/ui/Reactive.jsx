@@ -50,8 +50,8 @@ class Show extends React.Component {
     // console.log('STANDARD:', currentUser);
     return (
       <div>
-        <h5>STANDARD: _id: {currentUser._id}</h5>
-        <h5>STANDARD: username: {currentUser.username}</h5>
+        <h5>_id: {currentUser._id}</h5>
+        <h5>username: {currentUser.username}</h5>
         {/* <button onClick={e => refetch()}>refetch</button> */}
       </div>
     )
