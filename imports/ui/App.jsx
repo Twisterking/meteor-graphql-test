@@ -4,6 +4,7 @@ import TestHoc from './TestHoc';
 import Reactive from './Reactive';
 import Itemlist from './Itemlist';
 import Cart from './Cart';
+import GroupsFromSub from './GroupsFromSub';
 
 // https://stackoverflow.com/questions/5529718/how-to-detect-internet-speed-in-javascript
 const arrTimes = [];
@@ -71,12 +72,12 @@ export default (props) => {
             <Hook />
           </div>
           <div>
-            <h4>ReactiveQuery</h4>
+            <h4>ReactiveQuery:</h4>
             <Reactive />
           </div>
           <div>
-            <h4>withTracker()</h4>
-            <h5>TODO!</h5>
+            <h4>withTracker(): Groups:</h4>
+            <GroupsFromSub />
           </div>
         </div>
       </div>
