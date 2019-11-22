@@ -15,5 +15,8 @@ export {
 if(Meteor.isClient) {
   [Groups].forEach(collection => {
     console.log(collection);
+    ['find', 'findOne'].forEach(method => {
+
+    });
   });
 }
