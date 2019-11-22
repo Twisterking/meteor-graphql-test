@@ -29,9 +29,10 @@ const GET_CART_DATA = gql`
   query getOpenOrder($groupId: ID) {
     openorderbody(groupId: $groupId) {
       _id
+      list_id
       row_id
-      itemId,
-      item_amount,
+      itemId
+      item_amount
       unit
     }
   }
@@ -43,8 +44,8 @@ const ADD_TO_CART = gql`
     addToCart(openOrderId: $openOrderId, itemId: $itemId, amount: $amount, unit: $unit) {
       _id
       row_id
-      itemId,
-      item_amount,
+      itemId
+      item_amount
       unit
     }
   }

@@ -8,9 +8,10 @@ const GET_CART_DATA = gql`
   query getOpenOrder($groupId: ID) {
     openorderbody(groupId: $groupId) {
       _id
+      list_id
       row_id
-      itemId,
-      item_amount,
+      itemId
+      item_amount
       unit
     }
   }
@@ -27,7 +28,6 @@ const SUB_CART_DATA = gql`
 
 export default (props) => {
   const variables = { groupId: props.groupId };
-  // fetchPolicy='no-cache'
   return (
     <ReactiveQuery
       query={GET_CART_DATA}

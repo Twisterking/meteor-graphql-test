@@ -32,6 +32,7 @@ export function reduceStoreObject(reactiveEvent, store) {
 
 export function reduceStoreArray(reactiveEvent, store) {
   const { event, doc } = reactiveEvent;
+  console.log('AAAAA', { event, doc, store });
 
   if (!doc._id) {
     throw new Error(

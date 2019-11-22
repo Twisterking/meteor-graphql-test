@@ -42,9 +42,9 @@ class Subscription extends React.Component {
       document: subscription,
       variables: variables,
       updateQuery: (prev, { subscriptionData }) => {
-        // console.log('subscriptionData', subscriptionData);
         if (!subscriptionData.data) return prev;
-
+        // console.log('subscriptionData', subscriptionData.data);
+        
         const storeName = Object.keys(subscriptionData.data)[0];
         // SUBSCRIPTION HAS TO HAVE SAME NAME AS QUERY!!!
         const newStore = Object.assign({}, prev, {
@@ -53,7 +53,7 @@ class Subscription extends React.Component {
             prev[storeName]
           )
         });
-        console.log('newStore', newStore);
+        // console.log('newStore', newStore);
         return newStore;
       }
     });

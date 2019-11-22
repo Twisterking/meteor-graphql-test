@@ -28,6 +28,7 @@ export const typeDefs = [
   }
   type OpenOrderElement {
     _id: ID,
+    list_id: ID,
     row_id: Int,
     itemId: ID,
     unit: String,
@@ -120,7 +121,8 @@ export const resolvers = {
     },
     openorderbody: {
       resolve: payload => {
-        payload.doc.__typename == 'OpenOrderElement';
+        payload.doc.__typename = 'OpenOrderElement';
+        // console.log('payload!', JSON.stringify(payload.doc, false, 2));
         return payload
       },
       subscribe(_, args, context) {
@@ -144,6 +146,7 @@ export const resolvers = {
         row_id: lastOOItem.row_id + 1
       };
       newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
+      newBodyItem.__typename == 'OpenOrderElement';
       return newBodyItem
     }
   },
