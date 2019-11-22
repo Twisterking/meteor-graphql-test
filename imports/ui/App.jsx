@@ -43,10 +43,19 @@ function login(e) {
   Meteor.loginWithPassword(formData.get('login'), formData.get('password'), (error) => {
     if(error) return console.error(error);
     console.log('%c LOGGED IN! ', 'background: #40CA49; color: #ffffff');
+    localStorage.setItem('Meteor.user', JSON.stringify(Meteor.user()));
+  });
+}
+
+function logout(e) {
+  e.preventDefault();
+  Meteor.logout(() => {
+    localStorage.removeItem('Meteor.user');
   });
 }
 
 export default (props) => {
+  console.log('Meteor.user()', Meteor.user());
   return (
     <div>
       <div className="flex center">
@@ -56,7 +65,7 @@ export default (props) => {
             <input type="text" placeholder="Login" id="login" name="login" />
             <input type="password" placeholder="Password" id="password" name="password" />
             <button type="submit">LOGIN</button>
-            <button type="button" onClick={e => Meteor.logout()}>LOGOUT</button>
+            <button type="button" onClick={logout}>LOGOUT</button>
           </form>
         </div>
         <div>

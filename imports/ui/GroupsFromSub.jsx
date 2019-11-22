@@ -6,6 +6,7 @@ import { Groups } from '/imports/db';
 function GroupsFromSub(props) {
   const { loading, groups } = props;
   if(loading) return <h5>(( LOADING ))</h5>;
+  console.log('GroupsFromSub props', props);
   return (
     <ul>
       { groups.slice(0, 3).map(group => (
@@ -16,8 +17,8 @@ function GroupsFromSub(props) {
 }
 
 export default withTracker(() => {
-  const sub1 = Meteor.subscribe('buyer:getGroups');
-  const loading = !sub1.ready();
+  const sub = Meteor.subscribe('buyer:getGroups');
+  const loading = !sub.ready();
   if (!Meteor.user() || loading) return { loading: true }
   const currentUser = Meteor.user();
   let groups = Groups.find({ 'users.userId': currentUser._id }, { sort: { 'company.name': 1 } }).fetch().filter(group => {

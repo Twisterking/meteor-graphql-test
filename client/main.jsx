@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
 import { render } from 'react-dom';
 import React from 'react';
 import gql from 'graphql-tag';
@@ -48,3 +49,23 @@ Meteor.startup(async () => {
     document.getElementById('react-target')
   );
 });
+
+// MONKEY PATCHES
+
+const MeteorSubscribe = Meteor.subscribe;
+Meteor.subscribe = function(...args) {
+  const sub = MeteorSubscribe.call(this, ...args);
+  if(Tracker.nonreactive(() => Meteor.status().status == "offline")) {
+    Meteor.connection._subscriptions[sub.subscriptionId].ready = true;
+    Meteor.connection._subscriptions[sub.subscriptionId].readyDeps.changed();
+  }
+  return sub;
+}
+
+const AccountsUser = Accounts.user;
+Accounts.user = function() {
+  if(Tracker.nonreactive(() => Meteor.status().status == "offline")) {
+    return JSON.parse(localStorage.getItem('Meteor.user'));
+  }
+  return AccountsUser.call(this);
+}

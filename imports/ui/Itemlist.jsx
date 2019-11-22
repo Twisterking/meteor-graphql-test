@@ -76,11 +76,15 @@ export default (props) => {
     const groupId = '363SQib5kzShKmYo2';
     const openOrderId = 'aqMMFbWYu6zary74i';
     const units = ['kg', 'Stk', 'KRT', 'Pkg'];
-    addToCart({ variables: { openOrderId, itemId, amount: _.random(1, 20), unit: units[Math.floor(Math.random() * units.length)] } });
+    addToCart({ variables: {
+      openOrderId,
+      itemId,
+      amount: _.random(1, 20),
+      unit: units[Math.floor(Math.random() * units.length)]
+    } });
   }
 
   const variables = { listId: props.listId, limit: 20, skip: (page-1)*20 };
-  // fetchPolicy='no-cache'
   return (
     <ReactiveQuery
       query={GET_LIST_DATA}
