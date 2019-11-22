@@ -119,7 +119,11 @@ export const resolvers = {
       }
     },
     openorderbody: {
-      resolve: payload => payload,
+      resolve: payload => {
+        payload.doc.__typename == 'OpenOrderElement';
+        console.log('payload 111', payload);
+        return payload
+      },
       subscribe(_, args, context) {
         const { groupId } = args;
         let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
@@ -131,7 +135,15 @@ export const resolvers = {
   },
   Mutation: {
     addToCart(_, args, context) {
-      console.log('addToCart()', args, context);
+      const { openOrderId, itemId, amount, unit } = args;
+      const lastOOItem = OpenOrdersBody.findOne({ list_id: openOrderId }, { sort: { row_id: -1 } });
+      OpenOrdersBody.insert({
+        list_id: openOrderId,
+        itemId,
+        item_amount: amount,
+        unit: unit || undefined,
+        row_id: lastOOItem.row_id + 1
+      });
       return { success: true }
     }
   },

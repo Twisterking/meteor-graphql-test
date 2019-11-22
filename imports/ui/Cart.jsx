@@ -1,8 +1,8 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { ReactiveQuery } from 'apollo-live-client';
+// import { ReactiveQuery } from 'apollo-live-client';
 import _ from 'lodash';
-// import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
+import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
 const GET_CART_DATA = gql`
   query getOpenOrder($groupId: ID) {
@@ -10,6 +10,7 @@ const GET_CART_DATA = gql`
       _id
       row_id
       itemId,
+      item_amount,
       unit
     }
   }
@@ -35,6 +36,7 @@ export default (props) => {
     >
       {(props) => {
         const { data, error, loading, refetch } = props;
+        console.log('CART DATA', data);
         // https://docs.meteor.com/api/connections.html#Meteor-status
         const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
         if(loading && connected) return <h5>LOADING ...</h5>;

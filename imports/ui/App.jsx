@@ -41,7 +41,7 @@ function login(e) {
   const formData = new FormData(e.target);
   Meteor.loginWithPassword(formData.get('login'), formData.get('password'), (error) => {
     if(error) return console.error(error);
-    console.log('LOGGED IN!');
+    console.log('%c LOGGED IN! ', 'background: #40CA49; color: #ffffff');
   });
 }
 
