@@ -1,0 +1,3 @@
+[submodule "packages/meteor-grounddb"]
+	path = packages/meteor-grounddb
+	url = git@https://github.com/Twisterking/grounddb.git
