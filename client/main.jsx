@@ -5,12 +5,30 @@ import React from 'react';
 import gql from 'graphql-tag';
 window.gql = gql;
 
+import { ApolloLink } from 'apollo-link';
 import ApolloClient from 'apollo-client';
 import { OfflineClient } from 'offix-client';
-import { DDPLink } from 'meteor/swydo:ddp-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import { ApolloProvider } from 'react-apollo';
+
+// https://codeburst.io/highly-functional-offline-applications-using-apollo-client-12885bd5f335
+// https://github.com/larkintuckerllc/ApolloReactOffline/blob/master/src/components/App/index.tsx
+
+import { onError } from 'apollo-link-error';
+const errorLink = onError(() => {
+  console.log('Caught Apollo Client Error');
+});
+
+
+import { DDPLink } from 'meteor/swydo:ddp-apollo';
+import QueueLink from 'apollo-link-queue';
+import { RetryLink } from 'apollo-link-retry';
+import SerializingLink from 'apollo-link-serialize';
+const ddpLink = new DDPLink();
+const queueLink = new QueueLink();
+const retryLink = new RetryLink();
+const serializingLink = new SerializingLink();
 
 import App from '/imports/ui/App';
 
@@ -36,8 +54,14 @@ Meteor.startup(async () => {
 
   await waitOnCache;
   client = new ApolloClient({
-    link: new DDPLink(),
-    cache
+    cache,
+    link: ApolloLink.from([
+      errorLink,
+      queueLink,
+      serializingLink,
+      retryLink,
+      ddpLink,
+    ]),
   });
   window.client = client;
 
