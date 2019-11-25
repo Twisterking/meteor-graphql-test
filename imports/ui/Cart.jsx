@@ -1,14 +1,13 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { ReactiveQuery } from 'apollo-live-client';
+// import { ReactiveQuery } from 'apollo-live-client';
 import _ from 'lodash';
-// import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
+import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
 const GET_CART_DATA = gql`
   query getOpenOrder($groupId: ID) {
     openorderbody(groupId: $groupId) {
       _id
-      list_id
       row_id
       itemId
       item_amount

@@ -53,20 +53,24 @@ Meteor.startup(async () => {
   // client = await offlineClient.init();
 
   await waitOnCache;
+  // client = new ApolloClient({
+  //   cache,
+  //   link: ApolloLink.from([
+  //     errorLink,
+  //     queueLink,
+  //     serializingLink,
+  //     retryLink,
+  //     ddpLink
+  //   ])
+  // });
   client = new ApolloClient({
-    cache,
-    link: ApolloLink.from([
-      errorLink,
-      queueLink,
-      serializingLink,
-      retryLink,
-      ddpLink,
-    ]),
+    link: new DDPLink(),
+    cache
   });
   window.client = client;
 
   // fake offline:
-  Meteor.disconnect();
+  // Meteor.disconnect();
 
   render(
     <ApolloProvider client={client}>

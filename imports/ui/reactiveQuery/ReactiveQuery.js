@@ -16,7 +16,7 @@ export default class ReactiveQuery extends React.Component {
     return (
       <Query query={query} variables={variables} {...rest}>
         {props => {
-          // console.log('props1', props);
+          console.log('props1', props);
           return (
             <Subscription
               subscription={subscription}
@@ -24,7 +24,7 @@ export default class ReactiveQuery extends React.Component {
               {...props}
             >
               {() => {
-                // console.log('props2', props);
+                console.log('props2', props);
                 return children(props);
               }}
             </Subscription>
@@ -43,7 +43,7 @@ class Subscription extends React.Component {
       variables: variables,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
-        // console.log('subscriptionData', subscriptionData.data);
+        console.log('subscriptionData', subscriptionData.data);
         
         const storeName = Object.keys(subscriptionData.data)[0];
         // SUBSCRIPTION HAS TO HAVE SAME NAME AS QUERY!!!
@@ -53,7 +53,7 @@ class Subscription extends React.Component {
             prev[storeName]
           )
         });
-        // console.log('newStore', newStore);
+        console.log('newStore', newStore);
         return newStore;
       }
     });

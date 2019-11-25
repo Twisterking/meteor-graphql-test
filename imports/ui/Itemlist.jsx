@@ -29,7 +29,6 @@ const GET_CART_DATA = gql`
   query getOpenOrder($groupId: ID) {
     openorderbody(groupId: $groupId) {
       _id
-      list_id
       row_id
       itemId
       item_amount

@@ -61,17 +61,15 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     user(_, args, context) {
-      // console.log('QUERY USER!');
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },
     listbody(_, args, context) {
-      // console.log('QUERY 11', args);
       const { listId, limit, skip } = args;
       return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
     },
     openorderbody(_, args, context) {
-      // console.log('QUERY 22', args);
+      console.log('QUERY openorderbody', args);
       const { groupId } = args;
       let headId = null;
       let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
@@ -85,22 +83,10 @@ export const resolvers = {
         });
       }
       if(!headId && openOrderHead) headId = openOrderHead._id;
-      // console.log('openOrderId:', headId);
       return OpenOrdersBody.find({ list_id: headId }, { sort: { row_id: 1 } }).fetch();
     },
   },
   Subscription: {
-    // userChange: {
-    //   subscribe: () => pubsub.asyncIterator(USER_CHANGE_CHANNEL),
-    // }
-    // https://www.apollographql.com/docs/apollo-server/data/data/#context-argument
-    // userChange: {
-    //   resolve: payload => payload,
-    //   subscribe() {
-    //     const observable = Meteor.users.find({ _id: 'seDueMBtGiuMCWez6' });
-    //     return asyncIterator(observable);
-    //   }
-    // }
     user: {
       resolve: payload => payload,
       subscribe(_, args, context) {
@@ -114,7 +100,6 @@ export const resolvers = {
       resolve: payload => payload,
       subscribe(_, args, context) {
         const { listId, limit, skip } = args;
-        // NOT WORKING! Subscriptions have to subscribe "the whole body":
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
@@ -122,11 +107,13 @@ export const resolvers = {
     openorderbody: {
       resolve: payload => {
         payload.doc.__typename = 'OpenOrderElement'; // no idea why I need this for the sub
-        return payload
+        console.log('openorderbody payload', payload);
+        return payload;
       },
       subscribe(_, args, context) {
         const { groupId } = args;
         let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
+        console.log('subscribe', openOrderHead._id);
         if(!openOrderHead) return;
         const observable = OpenOrdersBody.find({ list_id: openOrderHead._id }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
@@ -144,8 +131,9 @@ export const resolvers = {
         unit: unit || undefined,
         row_id: lastOOItem.row_id + 1
       };
+      console.log('newBodyItem', newBodyItem);
       newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
-      return newBodyItem
+      return newBodyItem;
     }
   },
   JSON: GraphQLJSON

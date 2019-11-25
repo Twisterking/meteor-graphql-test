@@ -6,7 +6,7 @@ import { Groups } from '/imports/db';
 function GroupsFromSub(props) {
   const { loading, groups } = props;
   if(loading) return <h5>(( LOADING ))</h5>;
-  console.log('GroupsFromSub() render: props', props);
+  // console.log('GroupsFromSub() render: props', props);
   return (
     <ul>
       { groups.slice(0, 3).map(group => (
