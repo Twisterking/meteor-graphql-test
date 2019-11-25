@@ -15,6 +15,10 @@ if(Meteor.isServer) {
   });
 }
 
+if(Meteor.isClient && Meteor.isDevelopment) {
+  window.Groups = Groups;
+}
+
 // Groups.schema = new SimpleSchema({
 //   name: {
 //     type: String

@@ -6,7 +6,6 @@ import gql from 'graphql-tag';
 window.gql = gql;
 
 import ApolloClient from 'apollo-client';
-import { OfflineClient } from 'offix-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import QueueLink from 'apollo-link-queue';
 import { RetryLink } from 'apollo-link-retry';
@@ -16,14 +15,17 @@ import { DDPLink } from 'meteor/swydo:ddp-apollo';
 import { persistCache } from 'apollo-cache-persist';
 import { ApolloProvider } from 'react-apollo';
 
+// import { OfflineClient } from 'offix-client';
+
 import { onError } from 'apollo-link-error';
 const errorLink = onError(() => {
   console.log('Caught Apollo Client Error');
 });
-
 const ddpLink = new DDPLink();
 const queueLink = new QueueLink();
-const retryLink = new RetryLink();
+// https://www.apollographql.com/docs/link/links/retry/
+// https://medium.com/twostoryrobot/a-recipe-for-offline-support-in-react-apollo-571ad7e6f7f4
+const retryLink = new RetryLink({ attempts : { max : Infinity } });
 const serializingLink = new SerializingLink();
 
 import App from '/imports/ui/App';
@@ -45,9 +47,6 @@ const storage = window.localStorage;
 const waitOnCache = persistCache({ cache, storage });
 
 Meteor.startup(async () => {
-  // Offix:
-  // client = await offlineClient.init();
-
   await waitOnCache;
   client = new ApolloClient({
     cache,

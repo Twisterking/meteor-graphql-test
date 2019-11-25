@@ -22,11 +22,12 @@ if(Meteor.isClient) {
       const origMethod = collection[method];
       collection[method] = function(...args) {
         if(Tracker.nonreactive(() => Meteor.status().status == "offline")) {
-          console.log('OFFLINE! ' + method);
-          console.log('current Data:', groundColl.find({}).fetch());
-          return groundColl[method].call(this, ...args);
+          // console.log('OFFLINE! ' + method);
+          // console.log('ARGS?', ...args);
+          // console.log('OFFLINE!', groundColl[method].call(groundColl, ...args).fetch());
+          return groundColl[method].call(groundColl, ...args);
         }
-        console.log('ONLINE! ' + method);
+        // console.log('ONLINE! ' + method);
         return origMethod.call(this, ...args);
       }
     });
