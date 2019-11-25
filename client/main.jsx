@@ -7,10 +7,24 @@ window.gql = gql;
 
 import ApolloClient from 'apollo-client';
 import { OfflineClient } from 'offix-client';
-import { DDPLink } from 'meteor/swydo:ddp-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import QueueLink from 'apollo-link-queue';
+import { RetryLink } from 'apollo-link-retry';
+import SerializingLink from 'apollo-link-serialize';
+import { ApolloLink } from 'apollo-link';
+import { DDPLink } from 'meteor/swydo:ddp-apollo';
 import { persistCache } from 'apollo-cache-persist';
 import { ApolloProvider } from 'react-apollo';
+
+import { onError } from 'apollo-link-error';
+const errorLink = onError(() => {
+  console.log('Caught Apollo Client Error');
+});
+
+const ddpLink = new DDPLink();
+const queueLink = new QueueLink();
+const retryLink = new RetryLink();
+const serializingLink = new SerializingLink();
 
 import App from '/imports/ui/App';
 
@@ -36,13 +50,19 @@ Meteor.startup(async () => {
 
   await waitOnCache;
   client = new ApolloClient({
-    link: new DDPLink(),
-    cache
+    cache,
+    link: ApolloLink.from([
+      errorLink,
+      queueLink,
+      serializingLink,
+      retryLink,
+      ddpLink
+    ])
   });
   window.client = client;
 
   // fake offline:
-  Meteor.disconnect();
+  // Meteor.disconnect();
 
   render(
     <ApolloProvider client={client}>
