@@ -62,7 +62,7 @@ Meteor.startup(async () => {
   window.client = client;
 
   // fake offline:
-  // Meteor.disconnect();
+  Meteor.disconnect();
 
   render(
     <ApolloProvider client={client}>
