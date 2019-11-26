@@ -54,14 +54,14 @@ Meteor.startup(async () => {
       errorLink,
       queueLink,
       serializingLink,
-      retryLink,
+      // retryLink,
       ddpLink
     ])
   });
   window.client = client;
 
   // fake offline:
-  Meteor.disconnect();
+  // Meteor.disconnect();
 
   render(
     <ApolloProvider client={client}>

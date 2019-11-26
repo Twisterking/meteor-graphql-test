@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Random } from 'meteor/random';
 import gql from 'graphql-tag';
 import { ReactiveQuery } from 'apollo-live-client';
 import { useMutation } from '@apollo/react-hooks';
@@ -62,14 +63,33 @@ export default (props) => {
     setPage(page + 1);
   }
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
+  // https://www.apollographql.com/docs/react/api/react-hooks/#usemutation
   const [addToCart, { data }] = useMutation(ADD_TO_CART, {
     update(cache, { data: { addToCart } }) {
-      // console.log('addToCart', addToCart);
       const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: '363SQib5kzShKmYo2' } });
+      console.log({ openorderbody, addToCart });
       cache.writeQuery({
         query: GET_CART_DATA,
         data: { openorderbody: openorderbody.concat([addToCart]) },
       });
+    },
+    optimisticResponse: {
+      // https://github.com/larkintuckerllc/ApolloReactOffline/blob/master/src/components/App/AppTodos/AppTodosCreate.tsx
+      addToCart: {
+        __typename: "OpenOrderElement",
+        list_id: "aqMMFbWYu6zary74i",
+        itemId: "Sd2irqR9PXm6pXKes",
+        item_amount: 19,
+        row_id: 3,
+        unit: "kg",
+        _id: Random.id()
+      }
+    },
+    onError(err) {
+      console.error('Mutation Error:', err);
+    },
+    onCompleted(data) {
+      console.log('Mutation Completed. Data:', data);
     }
   });
   const doAddToCart = itemId => e => {
