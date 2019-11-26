@@ -67,10 +67,11 @@ export default (props) => {
   const [addToCart, { data }] = useMutation(ADD_TO_CART, {
     update(cache, { data: { addToCart } }) {
       const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: '363SQib5kzShKmYo2' } });
-      console.log({ openorderbody, addToCart });
+      const newOpenOrderBody = openorderbody.concat([addToCart]);
+      console.log({ addToCart, newOpenOrderBody });
       cache.writeQuery({
         query: GET_CART_DATA,
-        data: { openorderbody: openorderbody.concat([addToCart]) },
+        data: { openorderbody: newOpenOrderBody },
       });
     },
     optimisticResponse: {
@@ -80,7 +81,7 @@ export default (props) => {
         list_id: "aqMMFbWYu6zary74i",
         itemId: "Sd2irqR9PXm6pXKes",
         item_amount: 19,
-        row_id: 3,
+        row_id: 77,
         unit: "kg",
         _id: Random.id()
       }
