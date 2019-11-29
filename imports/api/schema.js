@@ -114,7 +114,6 @@ export const resolvers = {
       resolve: payload => payload,
       subscribe(_, args, context) {
         const { listId, limit, skip } = args;
-        // NOT WORKING! Subscriptions have to subscribe "the whole body":
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }

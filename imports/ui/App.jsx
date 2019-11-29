@@ -99,8 +99,8 @@ export default (props) => {
           {/* Blacklist JUFA Kaffee AGM Klagenfurt */}
         </div>
         <div className="container">
-          <h3>CART groupId 363SQib5kzShKmYo2</h3>
-          <Cart groupId="363SQib5kzShKmYo2" />
+          <h3>CART groupId vXGNoPBx5cxDbMsui</h3>
+          <Cart groupId="vXGNoPBx5cxDbMsui" />
           {/* Group: JUFA Stift Gurk @ AGM Klagenfurt */}
         </div>
       </div>

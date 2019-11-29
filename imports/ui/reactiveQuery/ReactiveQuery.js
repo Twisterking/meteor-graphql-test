@@ -16,7 +16,7 @@ export default class ReactiveQuery extends React.Component {
     return (
       <Query query={query} variables={variables} {...rest}>
         {props => {
-          // console.log('props1', props);
+          console.log('Query props', props);
           return (
             <Subscription
               subscription={subscription}
@@ -24,7 +24,6 @@ export default class ReactiveQuery extends React.Component {
               {...props}
             >
               {() => {
-                // console.log('props2', props);
                 return children(props);
               }}
             </Subscription>
@@ -37,6 +36,7 @@ export default class ReactiveQuery extends React.Component {
 
 class Subscription extends React.Component {
   componentDidMount = () => {
+    console.log('componentDidMount', this.props);
     const { subscribeToMore, subscription, variables } = this.props;
     subscribeToMore({
       document: subscription,
@@ -57,8 +57,7 @@ class Subscription extends React.Component {
         return newStore;
       }
     });
-  };
-
+  }
   render() {
     const { children, ...rest } = this.props;
     return children(rest);

@@ -44,6 +44,7 @@ const ADD_TO_CART = gql`
   mutation AddToCart($openOrderId: ID, $itemId: ID, $amount: Float, $unit: String) {
     addToCart(openOrderId: $openOrderId, itemId: $itemId, amount: $amount, unit: $unit) {
       _id
+      list_id
       row_id
       itemId
       item_amount
@@ -51,6 +52,8 @@ const ADD_TO_CART = gql`
     }
   }
 `;
+
+// https://dev.to/aerogear/automatically-update-apollo-cache-after-mutations-20n7
 
 // https://reactjs.org/docs/hooks-state.html
 export default (props) => {
@@ -64,11 +67,11 @@ export default (props) => {
   }
   // https://www.apollographql.com/docs/react/data/mutations/#updating-the-cache-after-a-mutation
   // https://www.apollographql.com/docs/react/api/react-hooks/#usemutation
-  const [addToCart, { data }] = useMutation(ADD_TO_CART, {
+  const [addToCart, result] = useMutation(ADD_TO_CART, {
     update(cache, { data: { addToCart } }) {
-      const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: '363SQib5kzShKmYo2' } });
+      const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: 'vXGNoPBx5cxDbMsui' } });
       const newOpenOrderBody = openorderbody.concat([addToCart]);
-      console.log({ addToCart, newOpenOrderBody });
+      console.log('Mutation update()', { addToCart, newOpenOrderBody });
       cache.writeQuery({
         query: GET_CART_DATA,
         data: { openorderbody: newOpenOrderBody },
@@ -93,9 +96,10 @@ export default (props) => {
       console.log('Mutation Completed. Data:', data);
     }
   });
+  console.log('Mutation result?', result);
   const doAddToCart = itemId => e => {
-    const groupId = '363SQib5kzShKmYo2';
-    const openOrderId = 'aqMMFbWYu6zary74i';
+    const groupId = 'vXGNoPBx5cxDbMsui';
+    const openOrderId = 'qPDGf3p53P9G4dqs2';
     const units = ['kg', 'Stk', 'KRT', 'Pkg'];
     addToCart({ variables: {
       openOrderId,
