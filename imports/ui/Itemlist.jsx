@@ -71,24 +71,24 @@ export default (props) => {
     update(cache, { data: { addToCart } }) {
       const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: 'vXGNoPBx5cxDbMsui' } });
       const newOpenOrderBody = openorderbody.concat([addToCart]);
-      console.log('Mutation update()', { addToCart, newOpenOrderBody });
+      // console.log('Mutation update()', { addToCart, newOpenOrderBody });
       cache.writeQuery({
         query: GET_CART_DATA,
         data: { openorderbody: newOpenOrderBody },
       });
     },
-    optimisticResponse: {
-      // https://github.com/larkintuckerllc/ApolloReactOffline/blob/master/src/components/App/AppTodos/AppTodosCreate.tsx
-      addToCart: {
-        __typename: "OpenOrderElement",
-        list_id: "aqMMFbWYu6zary74i",
-        itemId: "Sd2irqR9PXm6pXKes",
-        item_amount: 19,
-        row_id: 77,
-        unit: "kg",
-        _id: Random.id()
-      }
-    },
+    // https://github.com/larkintuckerllc/ApolloReactOffline/blob/master/src/components/App/AppTodos/AppTodosCreate.tsx
+    // optimisticResponse: {
+    //   addToCart: {
+    //     __typename: "OpenOrderElement",
+    //     list_id: "aqMMFbWYu6zary74i",
+    //     itemId: "Sd2irqR9PXm6pXKes",
+    //     item_amount: 19,
+    //     row_id: 77,
+    //     unit: "kg",
+    //     _id: Random.id()
+    //   }
+    // },
     onError(err) {
       console.error('Mutation Error:', err);
     },

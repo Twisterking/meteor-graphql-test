@@ -11,6 +11,11 @@ window.gql = gql;
 // WORA:
 import { ApolloClient } from "@wora/apollo-offline";
 import ApolloCache from '@wora/apollo-cache';
+import { NetInfo } from "@wora/netinfo";
+// https://github.com/react-native-community/react-native-netinfo/blob/master/README.md#usage
+const stopCheckingConnection = NetInfo.addEventListener(state => {
+  console.log('NetInfo', state);
+});
 
 import QueueLink from 'apollo-link-queue';
 import { RetryLink } from 'apollo-link-retry';
