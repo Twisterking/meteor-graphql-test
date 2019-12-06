@@ -35,9 +35,9 @@ export default props => (
     variables={{ userId: 'CYzjtN3TaWB9KQJAP' }}
   >
     {(props) => {
-      // console.log('PROPS:', props);
+      console.log('PROPS:', props);
       const { data, error, loading, refetch } = props;
-      if(loading) return null;
+      if(loading || !data) return null;
       if(error) { console.error(error); return null; }
       return <Show currentUser={data.user} refetch={refetch} />;
     }}

@@ -61,7 +61,7 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     user(_, args, context) {
-      // console.log('QUERY USER!');
+      console.log('QUERY USER!');
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },

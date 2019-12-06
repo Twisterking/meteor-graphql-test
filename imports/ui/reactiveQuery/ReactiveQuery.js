@@ -36,7 +36,7 @@ export default class ReactiveQuery extends React.Component {
 
 class Subscription extends React.Component {
   componentDidMount = () => {
-    console.log('componentDidMount', this.props);
+    // console.log('componentDidMount', this.props);
     const { subscribeToMore, subscription, variables } = this.props;
     subscribeToMore({
       document: subscription,

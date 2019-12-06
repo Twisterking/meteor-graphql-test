@@ -22,7 +22,7 @@ export default props => {
   const { loading, error, data } = useQuery(GET_USER_DATA, {
     variables: { userId: 'seDueMBtGiuMCWez6' },
   });
-  if(loading) return null;
+  if(loading || !data) return null;
   const currentUser = data.user;
   return (
     <div>

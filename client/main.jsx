@@ -7,6 +7,11 @@ window.gql = gql;
 
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+
+// WORA:
+// import { ApolloClient } from "@wora/apollo-offline";
+// import ApolloCache from '@wora/apollo-cache';
+
 import QueueLink from 'apollo-link-queue';
 import { RetryLink } from 'apollo-link-retry';
 import SerializingLink from 'apollo-link-serialize';
@@ -39,14 +44,31 @@ _ = require('lodash');
 //   cache: new InMemoryCache()
 // });
 
-export let client;
 
-// Persistent Cache: https://github.com/apollographql/apollo-cache-persist
+
+// Persistant offline cache https://github.com/apollographql/apollo-cache-persist
+export let client;
 const cache = new InMemoryCache();
 const storage = window.localStorage;
 const waitOnCache = persistCache({ cache, storage });
 
+
+
+// WORA: https://morrys.github.io/wora/docs/apollo-offline
+// export const client = new ApolloClient({
+//   link: ddpLink,
+//   cache: new ApolloCache({
+//     dataIdFromObject: o => o.id
+//   })
+// });
+// client.setOfflineOptions({
+//   link: ddpLink
+// });
+
 Meteor.startup(async () => {
+  // wora
+  // await client.hydrated();
+
   await waitOnCache;
   client = new ApolloClient({
     cache,
