@@ -22,6 +22,7 @@ export default props => {
   const { loading, error, data } = useQuery(GET_USER_DATA, {
     variables: { userId: 'seDueMBtGiuMCWez6' },
   });
+  console.log('HOOK', { loading, error, data });
   if(loading || !data) return null;
   const currentUser = data.user;
   return (

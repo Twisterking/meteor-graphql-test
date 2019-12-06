@@ -55,19 +55,21 @@ const waitOnCache = persistCache({ cache, storage });
 
 
 // WORA: https://morrys.github.io/wora/docs/apollo-offline
+// const cache = new ApolloCache({
+//   dataIdFromObject: o => o.id
+// });
 // export const client = new ApolloClient({
 //   link: ddpLink,
-//   cache: new ApolloCache({
-//     dataIdFromObject: o => o.id
-//   })
+//   cache
 // });
+
 // client.setOfflineOptions({
 //   link: ddpLink
 // });
 
 Meteor.startup(async () => {
   // wora
-  // await client.hydrated();
+  // await cache.hydrate();
 
   await waitOnCache;
   client = new ApolloClient({
@@ -76,7 +78,6 @@ Meteor.startup(async () => {
       errorLink,
       queueLink,
       serializingLink,
-      // retryLink,
       ddpLink
     ])
   });
