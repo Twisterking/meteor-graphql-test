@@ -98,7 +98,6 @@ export default (props) => {
   });
   console.log('Mutation result?', result);
   const doAddToCart = itemId => e => {
-    const groupId = 'vXGNoPBx5cxDbMsui';
     const openOrderId = 'qPDGf3p53P9G4dqs2';
     const units = ['kg', 'Stk', 'KRT', 'Pkg'];
     addToCart({ variables: {
