@@ -118,7 +118,7 @@ export default (props) => {
                         optimisticResponse={{
                           addToCart: {
                             ...mutationVars,
-                            row_id: 77,
+                            row_id: 77, // just some random high rowId - shouldn't make a difference?!
                             __typename: "OpenOrderElement"
                           }
                         }}
