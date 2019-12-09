@@ -42,8 +42,8 @@ const GET_CART_DATA = gql`
 
 // MUTATIONS - https://www.apollographql.com/docs/react/data/mutations/
 const ADD_TO_CART = gql`
-  mutation AddToCart($list_id: ID, $itemId: ID, $item_amount: Float, $unit: String) {
-    addToCart(list_id: $list_id, itemId: $itemId, item_amount: $item_amount, unit: $unit) {
+  mutation AddToCart($_id: ID, $list_id: ID, $itemId: ID, $item_amount: Float, $unit: String) {
+    addToCart(_id: $_id, list_id: $list_id, itemId: $itemId, item_amount: $item_amount, unit: $unit) {
       _id
       list_id
       row_id
@@ -94,6 +94,7 @@ export default (props) => {
                   const openOrderId = 'qPDGf3p53P9G4dqs2';
                   const units = ['kg', 'Stk', 'KRT', 'Pkg'];
                   const mutationVars = {
+                    _id: Random.id(),
                     itemId: item.itemId,
                     list_id: openOrderId,
                     item_amount: _.random(1, 20),
@@ -116,10 +117,9 @@ export default (props) => {
                         }}
                         optimisticResponse={{
                           addToCart: {
-                            __typename: "OpenOrderElement",
+                            ...mutationVars,
                             row_id: 77,
-                            _id: Random.id(),
-                            ...mutationVars
+                            __typename: "OpenOrderElement"
                           }
                         }}
                       >
