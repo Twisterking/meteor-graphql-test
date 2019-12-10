@@ -109,6 +109,7 @@ export default (props) => {
                         update={(cache, { data: { addToCart } }) => {
                           const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: 'vXGNoPBx5cxDbMsui' } });
                           const newOpenOrderBody = openorderbody.concat([addToCart]);
+                          // TODO: update row_id of just inserted item coming from server
                           if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
                           cache.writeQuery({
                             query: GET_CART_DATA,
