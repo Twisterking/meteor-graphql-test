@@ -109,9 +109,10 @@ export default (props) => {
                         update={(cache, { data: { addToCart } }) => {
                           const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: 'vXGNoPBx5cxDbMsui' } });
                           const newOpenOrderBody = openorderbody.concat([addToCart]);
-                          // console.log('Mutation update()', { addToCart, newOpenOrderBody });
+                          if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
                           cache.writeQuery({
                             query: GET_CART_DATA,
+                            variables: { groupId: 'vXGNoPBx5cxDbMsui' },
                             data: { openorderbody: newOpenOrderBody }
                           })
                         }}

@@ -71,7 +71,7 @@ _ = require('lodash');
 // WORA: https://morrys.github.io/wora/docs/apollo-offline
 const cache = new ApolloCache({
   dataIdFromObject: o => {
-    console.log('dataIdFromObject o:', o);
+    // console.log('dataIdFromObject o:', o);
     return o._id
   }
 });
