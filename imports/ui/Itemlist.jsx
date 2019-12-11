@@ -58,96 +58,111 @@ const ADD_TO_CART = gql`
 
 // <Mutation> : https://www.apollographql.com/docs/react/data/mutations/
 
-export default (props) => {
-  const [page, setPage] = useState(1);
-  const prevPage = () => {
-    if(page == 1) return;
-    setPage(page - 1);
+export default class Itemlist extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      page: 1
+    }
+    this.openOrderId = 'qPDGf3p53P9G4dqs2';
   }
-  const nextPage = () => {
-    setPage(page + 1);
+  prevPage = () => {
+    this.setState(state => {
+      if(state.page == 1) return;
+      state.page--;
+      return state;
+    });
   }
-  const variables = { listId: props.listId, limit: 20, skip: (page-1)*20 };
-  return (
-    <ReactiveQuery
-      query={GET_LIST_DATA}
-      subscription={SUB_LIST_DATA}
-      variables={variables}
-    >
-      {(props) => {
-        const { data, error, loading, refetch } = props;
-        // https://docs.meteor.com/api/connections.html#Meteor-status
-        const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
-        if(loading && connected) return <h5>LOADING ...</h5>;
-        if(!data) return <h5>No Data</h5>
-        const items = data.listbody;
-        return (
-          <div className="list-container">
-            <div className="flex">
-              <button onClick={prevPage}>&lt;</button>
-              Seite {page}
-              <button onClick={nextPage}>&gt;</button>
+  nextPage = () => {
+    this.setState(state => {
+      state.page++;
+      return state;
+    });
+  }
+  getMutationVars = itemId => {
+    const units = ['kg', 'Stk', 'KRT', 'Pkg'];
+    return {
+      _id: Random.id(),
+      itemId,
+      list_id: this.openOrderId,
+      item_amount: _.random(1, 20),
+      unit: units[Math.floor(Math.random() * units.length)]
+    }
+  }
+  render() {
+    const variables = { listId: this.props.listId, limit: 20, skip: (this.state.page-1)*20 };
+    return (
+      <ReactiveQuery
+        query={GET_LIST_DATA}
+        subscription={SUB_LIST_DATA}
+        variables={variables}
+      >
+        {(props) => {
+          const { data, error, loading, refetch } = props;
+          // https://docs.meteor.com/api/connections.html#Meteor-status
+          const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
+          if(loading && connected) return <h5>LOADING ...</h5>;
+          if(!data) return <h5>No Data</h5>
+          const items = data.listbody;
+          return (
+            <div className="list-container">
+              <div className="flex">
+                <button onClick={this.prevPage}>&lt;</button>
+                Seite {this.state.page}
+                <button onClick={this.nextPage}>&gt;</button>
+              </div>
+              { error ? <h2>ERROR!</h2> : (
+                <ul>
+                  {_.orderBy(items, ['row_id'], ['asc']).map(item => {
+                    const mutationVars = this.getMutationVars(item.itemId);
+                    return (
+                      <li key={item._id}>
+                        {/* https://www.apollographql.com/docs/react/api/react-components/#mutation */}
+                        <Mutation
+                          mutation={ADD_TO_CART}
+                          variables={mutationVars}
+                          update={(cache, { data: { addToCart } }) => {
+                            const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: 'vXGNoPBx5cxDbMsui' } });
+                            const newOpenOrderBody = openorderbody.concat([addToCart]);
+                            if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
+                            cache.writeQuery({
+                              query: GET_CART_DATA,
+                              variables: { groupId: 'vXGNoPBx5cxDbMsui' },
+                              data: { openorderbody: newOpenOrderBody }
+                            })
+                          }}
+                          optimisticResponse={{
+                            addToCart: {
+                              ...mutationVars,
+                              row_id: 77, // just some random high rowId - shouldn't make a difference?!
+                              __typename: "OpenOrderElement"
+                            }
+                          }}
+                        >
+                          { addToCart => (
+                            <button onClick={addToCart}>+</button> 
+                          ) }
+                        </Mutation>
+                        <span>@{item.row_id}: {item._id} - {item.itemId}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) }
+              <div className="flex">
+                <button onClick={this.prevPage}>&lt;</button>
+                Seite {this.state.page}
+                <button onClick={this.nextPage}>&gt;</button>
+              </div>
+              <div className="flex _center mt">
+                <button onClick={e => refetch()}>REFETCH</button>
+              </div>
             </div>
-            { error ? <h2>ERROR!</h2> : (
-              <ul>
-                {_.orderBy(items, ['row_id'], ['asc']).map(item => {
-                  const openOrderId = 'qPDGf3p53P9G4dqs2';
-                  const units = ['kg', 'Stk', 'KRT', 'Pkg'];
-                  const mutationVars = {
-                    _id: Random.id(),
-                    itemId: item.itemId,
-                    list_id: openOrderId,
-                    item_amount: _.random(1, 20),
-                    unit: units[Math.floor(Math.random() * units.length)]
-                  }
-                  return (
-                    <li key={item._id}>
-                      {/* https://www.apollographql.com/docs/react/api/react-components/#mutation */}
-                      <Mutation
-                        mutation={ADD_TO_CART}
-                        variables={mutationVars}
-                        update={(cache, { data: { addToCart } }) => {
-                          const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId: 'vXGNoPBx5cxDbMsui' } });
-                          const newOpenOrderBody = openorderbody.concat([addToCart]);
-                          // TODO: update row_id of just inserted item coming from server
-                          if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
-                          cache.writeQuery({
-                            query: GET_CART_DATA,
-                            variables: { groupId: 'vXGNoPBx5cxDbMsui' },
-                            data: { openorderbody: newOpenOrderBody }
-                          })
-                        }}
-                        optimisticResponse={{
-                          addToCart: {
-                            ...mutationVars,
-                            row_id: 77, // just some random high rowId - shouldn't make a difference?!
-                            __typename: "OpenOrderElement"
-                          }
-                        }}
-                      >
-                        { addToCart => (
-                          <button onClick={addToCart}>+</button> 
-                        ) }
-                      </Mutation>
-                      <span>@{item.row_id}: {item._id} - {item.itemId}</span>
-                    </li>
-                  )
-                })}
-              </ul>
-            ) }
-            <div className="flex">
-              <button onClick={prevPage}>&lt;</button>
-              Seite {page}
-              <button onClick={nextPage}>&gt;</button>
-            </div>
-            <div className="flex _center mt">
-              <button onClick={e => refetch()}>REFETCH</button>
-            </div>
-          </div>
-        )
-      }}
-    </ReactiveQuery>
-  )
+          )
+        }}
+      </ReactiveQuery>
+    )
+  }
 }
 
 // OLD:

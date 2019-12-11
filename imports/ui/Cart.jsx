@@ -50,7 +50,7 @@ export default (props) => {
               <ul>
                 {_.orderBy(items, ['row_id'], ['asc']).map(item => (
                   <li key={item._id}>
-                    @{item.row_id}: {item.itemId} - {item.item_amount}x {item.unit}
+                    @{item.row_id}: ID: {item._id} - itemId: {item.itemId} - {item.item_amount}x {item.unit}
                   </li>
                 ))}
               </ul>
