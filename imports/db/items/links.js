@@ -3,23 +3,23 @@ import { ListsHead, ListsBody } from '../lists';
 import { OpenOrdersHead, OpenOrdersBody } from '../openorders';
 import { Categories } from '../categories';
 import { Prices } from '../prices';
-import { addLinks } from "@kaviar/nova"; // https://github.com/kaviarjs/nova/blob/master/docs/index.md#linking-collections
 
-addLinks(Items.rawCollection(), {
-  openOrderItems: {
-    collection: () => OpenOrdersBody.rawCollection(),
+Items.addLinks({
+  'openOrderItems': {
+    collection: OpenOrdersBody,
     inversedBy: 'item'
   },
-  listItems: {
-    collection: () => ListsBody.rawCollection(),
+  'listItems': {
+    collection: ListsBody,
     inversedBy: 'item'
   },
-  category: {
-    collection: () => Categories.rawCollection(),
+  'category': {
+    type: 'one',
+    collection: Categories,
     field: 'categoryId'
   },
-  prices: {
-    collection: () => Prices.rawCollection(),
+  'prices': {
+    collection: Prices,
     inversedBy: 'item'
   }
 });

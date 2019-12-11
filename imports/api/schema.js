@@ -4,9 +4,9 @@ import { Random } from 'meteor/random';
 import { asyncIterator } from 'apollo-live-server';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 import { Groups, ListsHead, ListsBody, OpenOrdersHead, OpenOrdersBody } from '/imports/db';
-import { query } from "@kaviar/nova"; // https://github.com/kaviarjs/nova/blob/master/docs/index.md#graphql-integration
-// import mongodb from 'mongodb';
-// console.log('mongodb', Object.keys(mongodb));
+
+import listsQuery from '/imports/db/lists/queries/listsQuery';
+// import { query } from "@kaviar/nova"; // https://github.com/kaviarjs/nova/blob/master/docs/index.md#graphql-integration
 
 // export const pubsub = new PubSub();
 export const USER_CHANGE_CHANNEL = 'user_changed';
@@ -66,23 +66,42 @@ export const resolvers = {
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },
-    listbody(_, args, context) {
-      const { listId, limit, skip } = args;
-      const novaQuery = query.graphql(ListsBody, {
-        $: {
-          list_id: listId
-        },
-        _id: 1,
-        row_id: 1,
-        itemId: 1
-      });
-      console.log('novaQuery', novaQuery);
-      return novaQuery.fetch();
-    },
-    // listbody(_, args, context) {
+    // standard Mongo
+    // listbody(_, args, context, ast) {
     //   const { listId, limit, skip } = args;
     //   return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
     // },
+    listbody(_, args, context, ast) {
+      const { userId } = context;
+      const { listId, limit, skip } = args;      
+      const user = Meteor.users.findOne({ _id: userId });
+      const listhead = ListsHead.findOne({ _id: listId });
+      const supplierId = listhead.supplier_id;
+
+      // cloned query
+      const listbody = listsQuery.clone({
+        listId: listId,
+        user,
+        group: null,
+        supplierId,
+        skip,
+        limit
+      }).fetch();
+      return listbody;
+
+      // https://cult-of-coders.github.io/grapher/#GraphQL-Bridge
+      // const listbody = ListsBody.astToQuery(ast, {
+      //   $filters: {
+      //     list_id: listId
+      //   },
+      //   $options: {
+      //     sort: { row_id: 1 },
+      //     limit,
+      //     skip
+      //   }
+      // }).fetch();
+      // return listbody;
+    },
     openorderbody(_, args, context) {
       const { groupId } = args;
       let headId = null;
@@ -123,25 +142,12 @@ export const resolvers = {
     // https://github.com/Swydo/ddp-apollo#setting-up-pubsub
     listbody: {
       resolve: payload => payload,
-      subscribe(_, args, context) {
+      subscribe(_, args, context, ast) {
         const { listId, limit, skip } = args;
-        const observable = query.graphql(ListsBody, {
-          $: {
-            list_id: listId
-          },
-          _id: 1,
-          row_id: 1,
-          itemId: 1
-        });
-        console.log(typeof observable);
+        // console.log('SUB ast:', ast);
+        const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
-      // subscribe(_, args, context) {
-      //   const { listId, limit, skip } = args;
-      //   const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
-      //   console.log(typeof observable);
-      //   return asyncIterator(observable);
-      // }
     },
     openorderbody: {
       resolve: payload => {

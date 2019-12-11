@@ -7,6 +7,9 @@ import { typeDefs, resolvers } from '/imports/api/schema';
 import '/imports/db/index';
 import '/imports/db/links';
 
+import '/imports/db'; // load all collections and grapher links
+import '/imports/db/exposures'; // only load grapher exposures on server
+
 _ = require('lodash');
 
 const schema = makeExecutableSchema({

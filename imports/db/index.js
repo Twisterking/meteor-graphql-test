@@ -1,3 +1,5 @@
+import './links';
+
 import { Tracker } from 'meteor/tracker';
 import { Items } from './items';
 import { Groups } from './groups';
