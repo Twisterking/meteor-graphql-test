@@ -105,7 +105,6 @@ export const resolvers = {
       resolve: payload => payload,
       subscribe(_, args, context) {
         const { userId } = args;
-        console.log('User sub!', userId);
         const observable = Meteor.users.find({ _id: userId });
         return asyncIterator(observable);
       }
