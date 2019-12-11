@@ -1,12 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
-import { PubSub } from 'graphql-subscriptions';
+// import { PubSub } from 'graphql-subscriptions'; // PROD: Later use https://github.com/davidyaha/graphql-redis-subscriptions
 import { asyncIterator } from 'apollo-live-server';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 import { Groups, ListsHead, ListsBody, OpenOrdersHead, OpenOrdersBody } from '/imports/db';
-// PROD: Later use https://github.com/davidyaha/graphql-redis-subscriptions
+import { query } from "@kaviar/nova"; // https://github.com/kaviarjs/nova/blob/master/docs/index.md#graphql-integration
+// import mongodb from 'mongodb';
+// console.log('mongodb', Object.keys(mongodb));
 
-export const pubsub = new PubSub();
+// export const pubsub = new PubSub();
 export const USER_CHANGE_CHANNEL = 'user_changed';
 
 export const typeDefs = [
@@ -61,17 +63,27 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     user(_, args, context) {
-      // console.log('QUERY USER!');
       const { userId } = args;
       return Meteor.users.findOne({ _id: userId });
     },
     listbody(_, args, context) {
-      // console.log('QUERY 11', args);
       const { listId, limit, skip } = args;
-      return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
+      const novaQuery = query.graphql(ListsBody, {
+        $: {
+          list_id: listId
+        },
+        _id: 1,
+        row_id: 1,
+        itemId: 1
+      });
+      console.log('novaQuery', novaQuery);
+      return novaQuery.fetch();
     },
+    // listbody(_, args, context) {
+    //   const { listId, limit, skip } = args;
+    //   return ListsBody.find({ list_id: listId }, { sort: { row_id: 1 }, limit, skip }).fetch();
+    // },
     openorderbody(_, args, context) {
-      // console.log('QUERY 22', args);
       const { groupId } = args;
       let headId = null;
       let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
@@ -85,7 +97,6 @@ export const resolvers = {
         });
       }
       if(!headId && openOrderHead) headId = openOrderHead._id;
-      // console.log('openOrderId:', headId);
       return OpenOrdersBody.find({ list_id: headId }, { sort: { row_id: 1 } }).fetch();
     },
   },
@@ -114,9 +125,23 @@ export const resolvers = {
       resolve: payload => payload,
       subscribe(_, args, context) {
         const { listId, limit, skip } = args;
-        const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
+        const observable = query.graphql(ListsBody, {
+          $: {
+            list_id: listId
+          },
+          _id: 1,
+          row_id: 1,
+          itemId: 1
+        });
+        console.log(typeof observable);
         return asyncIterator(observable);
       }
+      // subscribe(_, args, context) {
+      //   const { listId, limit, skip } = args;
+      //   const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
+      //   console.log(typeof observable);
+      //   return asyncIterator(observable);
+      // }
     },
     openorderbody: {
       resolve: payload => {
