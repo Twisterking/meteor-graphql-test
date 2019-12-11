@@ -105,7 +105,6 @@ export default class Itemlist extends React.Component {
               { error ? <h2>ERROR!</h2> : (
                 <ul>
                   {_.orderBy(items, ['row_id'], ['asc']).map(item => {
-                    // const mutationVars = this.getMutationVars(item.itemId);
                     return (
                       <ListBodyItem
                         key={item._id}
@@ -192,7 +191,6 @@ class ListBodyItem extends React.Component {
   }
 }
 
-// OLD:
 // HOOK: https://reactjs.org/docs/hooks-state.html
 // export default (props) => {
 //   const [page, setPage] = useState(1);
