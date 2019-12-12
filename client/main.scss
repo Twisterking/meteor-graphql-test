@@ -45,6 +45,11 @@ button.bigger, a.button.bigger {
     padding: 5px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid gray;
+    &:last-child {
+      border-bottom: none;
+    }
     >* {
       margin-right: 10px;
       &:last-child {
@@ -53,6 +58,12 @@ button.bigger, a.button.bigger {
     }
     h4, h5, h6 {
       margin: 0;
+    }
+    .rowid {
+      width: 20px;
+    }
+    .name-ref {
+      width: 400px;
     }
   }
 }

@@ -134,21 +134,25 @@ export default class Itemlist extends React.Component {
 }
 
 class ListBodyItem extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const { listItem } = props;
+    const { units } = listItem.item;
     this.state = {
+      unit: units && units.length > 0 ? units[0].alias : null,
       mutationVars: null
     }
   }
   getMutationVars = cb => {
     const { listItem, groupId, openOrderId } = this.props;
-    const units = ['kg', 'Stk', 'KRT', 'Pkg'];
+    // const units = ['kg', 'Stk', 'KRT', 'Pkg'];
     const mutationVars = {
       _id: Random.id(),
       itemId: listItem.itemId,
       list_id: openOrderId,
       item_amount: _.random(1, 20),
-      unit: units[Math.floor(Math.random() * units.length)]
+      unit: this.state.unit
+      // unit: units[Math.floor(Math.random() * units.length)]
     }
     this.setState({ mutationVars }, () => {
       if(typeof cb == 'function') cb();
@@ -185,21 +189,21 @@ class ListBodyItem extends React.Component {
         >
           { addToCart => (
             <Fragment>
-              <span>{listItem.row_id}</span>
+              <span className="rowid">{listItem.row_id}</span>
               <div className="name-ref">
                 <h5>{listItem.item.item_name}</h5>
                 <small>{listItem.item.item_ref}</small>
               </div>
               <div className="units">
                 { listItem.item.units && listItem.item.units.length > 0 ?
-                  <select>
+                  <select onChange={e => this.setState({ unit: e.target.value })} value={this.state.unit}>
                     { listItem.item.units.map(unit => (
                       <option key={unit.alias} value={unit.alias}>{unit.name}</option>
                     )) }
                   </select>
                 : null }
               </div>
-              <button onClick={e => this.getMutationVars(addToCart)}>+</button> 
+              <button onClick={e => this.getMutationVars(addToCart)}>Warenkorb +</button> 
             </Fragment>
           ) }
         </Mutation>
