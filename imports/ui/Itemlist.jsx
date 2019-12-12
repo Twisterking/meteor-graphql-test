@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Random } from 'meteor/random';
 import gql from 'graphql-tag';
 import { ReactiveQuery } from 'apollo-live-client';
@@ -104,14 +104,14 @@ export default class Itemlist extends React.Component {
                 <button onClick={this.nextPage}>&gt;</button>
               </div>
               { error ? <h2>ERROR!</h2> : (
-                <ul>
+                <ul className="itemlist">
                   {_.orderBy(items, ['row_id'], ['asc']).map(item => {
                     return (
                       <ListBodyItem
                         key={item._id}
                         groupId={this.groupId}
                         openOrderId={this.openOrderId}
-                        item={item}
+                        listItem={item}
                       />
                     )
                   })}
@@ -141,11 +141,11 @@ class ListBodyItem extends React.Component {
     }
   }
   getMutationVars = cb => {
-    const { item, groupId, openOrderId } = this.props;
+    const { listItem, groupId, openOrderId } = this.props;
     const units = ['kg', 'Stk', 'KRT', 'Pkg'];
     const mutationVars = {
       _id: Random.id(),
-      itemId: item.itemId,
+      itemId: listItem.itemId,
       list_id: openOrderId,
       item_amount: _.random(1, 20),
       unit: units[Math.floor(Math.random() * units.length)]
@@ -157,9 +157,9 @@ class ListBodyItem extends React.Component {
   }
   render() {
     // https://www.apollographql.com/docs/react/api/react-components/#mutation
-    const { item, groupId, openOrderId } = this.props;
+    const { listItem, groupId, openOrderId } = this.props;
     const { mutationVars } = this.state;
-    console.log('item', item);
+    console.log('listItem', listItem);
     return (
       <li>
         <Mutation
@@ -184,10 +184,25 @@ class ListBodyItem extends React.Component {
           }}
         >
           { addToCart => (
-            <button onClick={e => this.getMutationVars(addToCart)}>+</button> 
+            <Fragment>
+              <span>{listItem.row_id}</span>
+              <div className="name-ref">
+                <h5>{listItem.item.item_name}</h5>
+                <small>{listItem.item.item_ref}</small>
+              </div>
+              <div className="units">
+                { listItem.item.units && listItem.item.units.length > 0 ?
+                  <select>
+                    { listItem.item.units.map(unit => (
+                      <option key={unit.alias} value={unit.alias}>{unit.name}</option>
+                    )) }
+                  </select>
+                : null }
+              </div>
+              <button onClick={e => this.getMutationVars(addToCart)}>+</button> 
+            </Fragment>
           ) }
         </Mutation>
-        <span>@{item.row_id}: {item._id} - {item.itemId}</span>
       </li>
     )
   }

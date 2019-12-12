@@ -47,7 +47,7 @@ export default (props) => {
         return (
           <div className="list-container">
             { error ? <h2>ERROR!</h2> : (
-              <ul>
+              <ul className="itemlist">
                 {_.orderBy(items, ['row_id'], ['asc']).map(item => (
                   <li key={item._id}>
                     @{item.row_id}: ID: {item._id} - itemId: {item.itemId} - {item.item_amount}x {item.unit}

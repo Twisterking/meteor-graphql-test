@@ -37,3 +37,22 @@ button.bigger, a.button.bigger {
 .flex._center {
   justify-content: center;
 }
+
+.itemlist {
+  display: block;
+  list-style: none;
+  li {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    >* {
+      margin-right: 10px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    h4, h5, h6 {
+      margin: 0;
+    }
+  }
+}
