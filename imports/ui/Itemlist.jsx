@@ -12,7 +12,8 @@ const GET_LIST_DATA = gql`
     listbody(listId: $listId, limit: $limit, skip: $skip) {
       _id
       row_id
-      itemId
+      itemId,
+      item
     }
   }
 `;
@@ -158,6 +159,7 @@ class ListBodyItem extends React.Component {
     // https://www.apollographql.com/docs/react/api/react-components/#mutation
     const { item, groupId, openOrderId } = this.props;
     const { mutationVars } = this.state;
+    console.log('item', item);
     return (
       <li>
         <Mutation

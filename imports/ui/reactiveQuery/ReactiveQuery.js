@@ -16,7 +16,6 @@ export default class ReactiveQuery extends React.Component {
     return (
       <Query query={query} variables={variables} {...rest}>
         {props => {
-          console.log('Query props', props);
           return (
             <Subscription
               subscription={subscription}

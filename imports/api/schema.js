@@ -26,7 +26,8 @@ export const typeDefs = [
   type ListElement {
     _id: ID,
     row_id: Int,
-    itemId: ID
+    itemId: ID,
+    item: JSON
   }
   type OpenOrderElement {
     _id: ID,
@@ -87,6 +88,9 @@ export const resolvers = {
         skip,
         limit
       }).fetch();
+      listbody.forEach((listItem, index) => {
+        if(index < 3 && Meteor.isDevelopment) console.log(JSON.stringify(listItem, false, 2));
+      });
       return listbody;
 
       // https://cult-of-coders.github.io/grapher/#GraphQL-Bridge
