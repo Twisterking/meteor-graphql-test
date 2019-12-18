@@ -149,9 +149,11 @@ export const resolvers = {
       resolve: ({ event, doc }, args, context, ast) => {
         console.log('listbody sub resolve:', { event, doc, args });
         doc.__typename = 'ListElement';
-        Object.assign(doc, {
-          item: Items.findOne(doc.itemId)
-        });
+        if(event == 'added' || event == 'changed') {
+          Object.assign(doc, {
+            item: Items.findOne(doc.itemId)
+          });
+        }
         return { event, doc };
       },
       subscribe(_, args, context, ast) {
