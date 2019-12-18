@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import { Random } from 'meteor/random';
 import gql from 'graphql-tag';
-import { ReactiveQuery } from 'apollo-live-client';
+// import { ReactiveQuery } from 'apollo-live-client';
 import { useMutation } from '@apollo/react-hooks';
 import { Mutation } from '@apollo/react-components';
 import _ from 'lodash';
-// import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
+import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
 const GET_LIST_DATA = gql`
   query getList($listId: ID, $limit: Int, $skip: Int) {
@@ -83,6 +83,7 @@ export default class Itemlist extends React.Component {
   }
   render() {
     const variables = { listId: this.props.listId, limit: 20, skip: (this.state.page-1)*20 };
+    // console.log('variables', variables);
     return (
       <ReactiveQuery
         query={GET_LIST_DATA}
@@ -96,7 +97,7 @@ export default class Itemlist extends React.Component {
           if(loading && connected) return <h5>LOADING ...</h5>;
           if(!data) return <h5>No Data</h5>
           const items = data.listbody;
-          if(items && items[0]) console.log(JSON.stringify(items[0], false, 2));
+          // if(items && items[0]) console.log(JSON.stringify(items[0], false, 2));
           return (
             <div className="list-container">
               <div className="flex">

@@ -3,7 +3,7 @@ import { Random } from 'meteor/random';
 // import { PubSub } from 'graphql-subscriptions'; // PROD: Later use https://github.com/davidyaha/graphql-redis-subscriptions
 import { asyncIterator } from 'apollo-live-server';
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
-import { Groups, ListsHead, ListsBody, OpenOrdersHead, OpenOrdersBody } from '/imports/db';
+import { Items, Groups, ListsHead, ListsBody, OpenOrdersHead, OpenOrdersBody } from '/imports/db';
 
 import listsQuery from '/imports/db/lists/queries/listsQuery';
 // import { query } from "@kaviar/nova"; // https://github.com/kaviarjs/nova/blob/master/docs/index.md#graphql-integration
@@ -145,10 +145,18 @@ export const resolvers = {
     },
     // https://github.com/Swydo/ddp-apollo#setting-up-pubsub
     listbody: {
-      resolve: payload => payload,
+      // https://github.com/cult-of-coders/apollo-live-server#creating-subscriptions
+      resolve: ({ event, doc }, args, context, ast) => {
+        console.log('listbody sub resolve:', { event, doc, args });
+        doc.__typename = 'ListElement';
+        Object.assign(doc, {
+          item: Items.findOne(doc.itemId)
+        });
+        return { event, doc };
+      },
       subscribe(_, args, context, ast) {
         const { listId, limit, skip } = args;
-        // console.log('SUB listbody args:', args);
+        console.log('SUB listbody args:', args);
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
