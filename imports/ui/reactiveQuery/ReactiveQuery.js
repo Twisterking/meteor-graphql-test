@@ -49,6 +49,17 @@ class Subscription extends React.Component {
   }
   updateSub = () => {
     const { subscribeToMore, subscription, variables } = this.props;
+    const apolloClient = this.props.client;
+    const subName = subscription.definitions[0].name.value;
+    // create my subKey for the apolloClient.activeSubscriptions Set
+    const avoidKeys = ['limit', 'skip'];
+    const subKey = subName.concat('-').concat(Object.keys(variables).map(key => {
+      if(avoidKeys.indexOf(key) !== -1) return null;
+      return `${key}${variables[key]}`
+    }).filter(v => !!v).join('-'));
+    if(apolloClient.activeSubscriptions.has(subKey)) return;
+
+    apolloClient.activeSubscriptions.add(subKey);
     // https://www.apollographql.com/docs/react/data/subscriptions/#subscribetomore
     subscribeToMore({
       document: subscription,
@@ -56,7 +67,6 @@ class Subscription extends React.Component {
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;        
         const storeName = Object.keys(subscriptionData.data)[0];
-        // SUBSCRIPTION HAS TO HAVE SAME NAME AS QUERY!!!
         let data = subscriptionData.data[storeName];
         console.log({ prev, storeName, data });
         const newStore = Object.assign({}, prev, {

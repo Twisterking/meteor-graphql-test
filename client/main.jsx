@@ -27,6 +27,7 @@ export const client = new ApolloClient({
   link: ddpLink,
   cache
 });
+client.activeSubscriptions = new Set();
 // client.setOfflineOptions({
 //   link: ddpLink
 // });
