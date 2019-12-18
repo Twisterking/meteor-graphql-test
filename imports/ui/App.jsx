@@ -56,6 +56,7 @@ function logout(e) {
 
 export default (props) => {
   const [rand, setRand] = useState(_.random(1,1000));
+  const [listId, setListId] = useState('Qy4tHNKJnY9fgyJiQ');
   return (
     <div>
       <div className="flex center">
@@ -94,8 +95,14 @@ export default (props) => {
       <hr/>
       <div className="flex mt">
         <div className="container">
-          <h3>LIST Qy4tHNKJnY9fgyJiQ</h3>        
-          <Itemlist listId="Qy4tHNKJnY9fgyJiQ" />
+          <div className="flex">
+            <h3>LIST {listId}</h3>
+            <select value={listId} onChange={e => setListId(e.target.value)}>
+              <option value="Qy4tHNKJnY9fgyJiQ">Qy4tHNKJnY9fgyJiQ</option>
+              <option value="YBxgJgkSNLHBmdNpp">YBxgJgkSNLHBmdNpp</option>
+            </select>
+          </div>   
+          <Itemlist listId={listId} />
           {/* Blacklist JUFA Kaffee AGM Klagenfurt */}
         </div>
         <div className="container">

@@ -96,6 +96,7 @@ export default class Itemlist extends React.Component {
           if(loading && connected) return <h5>LOADING ...</h5>;
           if(!data) return <h5>No Data</h5>
           const items = data.listbody;
+          if(items && items[0]) console.log(JSON.stringify(items[0], false, 2));
           return (
             <div className="list-container">
               <div className="flex">
@@ -137,7 +138,7 @@ class ListBodyItem extends React.Component {
   constructor(props) {
     super(props);
     const { listItem } = props;
-    const { units } = listItem.item;
+    const { units } = listItem.item || {};
     this.state = {
       unit: units && units.length > 0 ? units[0].alias : null,
       mutationVars: null
@@ -163,7 +164,7 @@ class ListBodyItem extends React.Component {
     // https://www.apollographql.com/docs/react/api/react-components/#mutation
     const { listItem, groupId, openOrderId } = this.props;
     const { mutationVars } = this.state;
-    console.log('listItem', listItem);
+    if(!listItem || !listItem.item) return null;
     return (
       <li>
         <Mutation

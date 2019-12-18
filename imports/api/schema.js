@@ -89,7 +89,7 @@ export const resolvers = {
         limit
       }).fetch();
       listbody.forEach((listItem, index) => {
-        if(index < 3 && Meteor.isDevelopment) console.log(JSON.stringify(listItem, false, 2));
+        if(index == 0 && Meteor.isDevelopment) console.log(JSON.stringify(listItem, false, 2));
       });
       return listbody;
 
@@ -148,7 +148,7 @@ export const resolvers = {
       resolve: payload => payload,
       subscribe(_, args, context, ast) {
         const { listId, limit, skip } = args;
-        // console.log('SUB ast:', ast);
+        // console.log('SUB listbody args:', args);
         const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
@@ -161,7 +161,10 @@ export const resolvers = {
       subscribe(_, args, context) {
         const { groupId } = args;
         let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
-        if(!openOrderHead) return;
+        if(!openOrderHead) {
+          console.error(`openOrderHead not found for groupId ${groupId}`);
+          return;
+        }
         const observable = OpenOrdersBody.find({ list_id: openOrderHead._id }, { sort: { row_id: 1 } });
         return asyncIterator(observable);
       }
@@ -177,7 +180,7 @@ export const resolvers = {
         itemId,
         item_amount,
         unit: unit || undefined,
-        row_id: lastOOItem.row_id + 1
+        row_id: lastOOItem && (lastOOItem.row_id + 1) || 0
       };
       newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
       return newBodyItem
