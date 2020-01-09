@@ -6,6 +6,7 @@ import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json';
 import { Items, Groups, ListsHead, ListsBody, OpenOrdersHead, OpenOrdersBody } from '/imports/db';
 
 import listsQuery from '/imports/db/lists/queries/listsQuery';
+import openOrdersQuery from '/imports/db/openorders/queries/openOrdersQuery';
 // import { query } from "@kaviar/nova"; // https://github.com/kaviarjs/nova/blob/master/docs/index.md#graphql-integration
 
 // export const pubsub = new PubSub();
@@ -107,11 +108,43 @@ export const resolvers = {
       // }).fetch();
       // return listbody;
     },
-    openorderbody(_, args, context) {
-      const { openOrderId } = args;
+    // openorderbody(_, args, context) {
+    //   const { openOrderId } = args;
+    //   const openOrderHead = OpenOrdersHead.findOne({ _id: openOrderId });
+    //   console.log('FETCH openOrderHead', openOrderHead);
+    //   return OpenOrdersBody.find({ list_id: openOrderId }, { sort: { row_id: 1 } }).fetch();
+    // },
+    openorderbody(_, args, context, ast) {
+      const { userId } = context;
+      const { openOrderId } = args;      
+      const user = Meteor.users.findOne({ _id: userId });
       const openOrderHead = OpenOrdersHead.findOne({ _id: openOrderId });
-      console.log('FETCH openOrderHead', openOrderHead);
-      return OpenOrdersBody.find({ list_id: openOrderId }, { sort: { row_id: 1 } }).fetch();
+      const supplierId = openOrderHead.supplier_id;
+
+      // cloned query
+      const openorderbody = openOrdersQuery.clone({
+        listId: openOrderId,
+        user,
+        group: null,
+        supplierId
+      }).fetch();
+      openorderbody.forEach((listItem, index) => {
+        if(index == 0 && Meteor.isDevelopment) console.log(JSON.stringify(listItem, false, 2));
+      });
+      return openorderbody;
+
+      // https://cult-of-coders.github.io/grapher/#GraphQL-Bridge
+      // const listbody = ListsBody.astToQuery(ast, {
+      //   $filters: {
+      //     list_id: listId
+      //   },
+      //   $options: {
+      //     sort: { row_id: 1 },
+      //     limit,
+      //     skip
+      //   }
+      // }).fetch();
+      // return listbody;
     },
   },
   Subscription: {

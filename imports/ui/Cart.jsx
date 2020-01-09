@@ -14,6 +14,7 @@ const GET_CART_DATA = gql`
       itemId
       item_amount
       unit
+      item
     }
   }
 `;
@@ -48,11 +49,27 @@ export default (props) => {
           <div className="list-container">
             { error ? <h2>ERROR!</h2> : (
               <ul className="itemlist">
-                {_.orderBy(items, ['row_id'], ['asc']).map(item => (
-                  <li key={item._id}>
-                    @{item.row_id}: ID: {item._id} - itemId: {item.itemId} - {item.item_amount}x {item.unit}
-                  </li>
-                ))}
+                {_.orderBy(items, ['row_id'], ['asc']).map(listItem => {
+                  // console.log('listItem', listItem);
+                  return (
+                    <li key={listItem._id}>
+                      <span className="rowid">{listItem.row_id}</span>
+                      <div className="name-ref">
+                        <h5>{listItem.item.item_name}</h5>
+                        <small>{listItem.item.item_ref}</small>
+                      </div>
+                      <div className="units">
+                        { listItem.item.units && listItem.item.units.length > 0 ?
+                          <select>
+                            { listItem.item.units.map(unit => (
+                              <option key={unit.alias} value={unit.alias}>{unit.name}</option>
+                            )) }
+                          </select>
+                        : null }
+                      </div>
+                    </li>
+                  )
+                })}
               </ul>
             ) }
             <div className="flex _center mt">

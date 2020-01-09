@@ -12,6 +12,7 @@ export default OpenOrdersBody.createQuery('openOrdersQuery', {
   item_amount: 1,
   unit: 1,
   total_price: 1,
+  itemId: 1,
   item: {
     supplier_id: 1,
     item_ref: 1,
@@ -22,16 +23,6 @@ export default OpenOrdersBody.createQuery('openOrdersQuery', {
     price: 1,
     image_id: 1,
     image_url: 1,
-    prices: {
-      $filter(props) {
-        filters = getPricesFilter(props);
-      },
-      itemId: 1,
-      groupId: 1,
-      priceGroupId: 1,
-      priceInfo: 1,
-      tag: 1
-    },
     meta: 1
   },
   $options: {

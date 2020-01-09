@@ -165,7 +165,10 @@ class ListBodyItem extends React.Component {
     // https://www.apollographql.com/docs/react/api/react-components/#mutation
     const { listItem, groupId, openOrderId } = this.props;
     const { mutationVars } = this.state;
-    if(!listItem || !listItem.item) return null;
+    if(!listItem || !listItem.item) {
+      console.warn('listItem has no .item!!', listItem);
+      return null;
+    }
     return (
       <li>
         <Mutation
