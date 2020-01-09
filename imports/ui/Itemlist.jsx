@@ -44,8 +44,8 @@ const GET_CART_DATA = gql`
 
 // MUTATIONS - https://www.apollographql.com/docs/react/data/mutations/
 const ADD_TO_CART = gql`
-  mutation AddToCart($_id: ID, $list_id: ID, $itemId: ID, $item_amount: Float, $unit: String) {
-    addToCart(_id: $_id, list_id: $list_id, itemId: $itemId, item_amount: $item_amount, unit: $unit) {
+  mutation AddToCart($_id: ID, $list_id: ID, $itemId: ID, $item: JSON, $item_amount: Float, $unit: String) {
+    addToCart(_id: $_id, list_id: $list_id, itemId: $itemId, item: $item, item_amount: $item_amount, unit: $unit) {
       _id
       list_id
       row_id
@@ -155,8 +155,10 @@ class ListBodyItem extends React.Component {
       unit: this.state.unit
     }
     this.setState({ mutationVars }, () => {
-      console.log('mutationVars set:', mutationVars);
-      if(typeof cb == 'function') cb();
+      // console.log('mutationVars set:', mutationVars);
+      if(typeof cb == 'function') {
+        cb();
+      }
     });
     return null;
   }
@@ -177,7 +179,7 @@ class ListBodyItem extends React.Component {
             const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { openOrderId } });
             const newOpenOrderBody = openorderbody.concat([addToCart]);
             if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
-            console.log('addToCartaddToCartaddToCart', addToCart);
+            // console.log('addToCartaddToCartaddToCart', addToCart);
             cache.writeQuery({
               query: GET_CART_DATA,
               variables: { openOrderId },
@@ -187,7 +189,7 @@ class ListBodyItem extends React.Component {
           optimisticResponse={{
             addToCart: {
               ...mutationVars,
-              row_id: 77, // just some random high rowId - shouldn't make a difference?!
+              row_id: 77,
               __typename: "OpenOrderElement"
             }
           }}

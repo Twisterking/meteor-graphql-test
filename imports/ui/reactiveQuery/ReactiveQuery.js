@@ -68,14 +68,14 @@ class Subscription extends React.Component {
         if (!subscriptionData.data) return prev;        
         const storeName = Object.keys(subscriptionData.data)[0];
         let data = subscriptionData.data[storeName];
-        console.log('Subscription updateQuery', { prev, storeName, data });
+        // console.log('Subscription updateQuery', { prev, storeName, data });
         const newStore = Object.assign({}, prev, {
           [storeName]: reduceStore(
             data,
             prev[storeName]
           )
         });
-        console.log({ newStore });
+        // console.log({ newStore });
         return newStore;
       }
     });
