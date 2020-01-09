@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import { Random } from 'meteor/random';
 import gql from 'graphql-tag';
-// import { ReactiveQuery } from 'apollo-live-client';
 import { useMutation } from '@apollo/react-hooks';
 import { Mutation } from '@apollo/react-components';
 import _ from 'lodash';
+// import { ReactiveQuery } from 'apollo-live-client';
 import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
 const GET_LIST_DATA = gql`
@@ -29,8 +29,8 @@ const SUB_LIST_DATA = gql`
 
 // GET CART DATA
 const GET_CART_DATA = gql`
-  query getOpenOrder($groupId: ID) {
-    openorderbody(groupId: $groupId) {
+  query getOpenOrder($openOrderId: ID) {
+    openorderbody(openOrderId: $openOrderId) {
       _id
       list_id
       row_id
@@ -65,8 +65,6 @@ export default class Itemlist extends React.Component {
     this.state = {
       page: 1
     }
-    this.groupId = 'vXGNoPBx5cxDbMsui';
-    this.openOrderId = 'qPDGf3p53P9G4dqs2';
   }
   prevPage = () => {
     this.setState(state => {
@@ -111,8 +109,7 @@ export default class Itemlist extends React.Component {
                     return (
                       <ListBodyItem
                         key={item._id}
-                        groupId={this.groupId}
-                        openOrderId={this.openOrderId}
+                        openOrderId={this.props.openOrderId}
                         listItem={item}
                       />
                     )
@@ -146,24 +143,24 @@ class ListBodyItem extends React.Component {
     }
   }
   getMutationVars = cb => {
-    const { listItem, groupId, openOrderId } = this.props;
-    // const units = ['kg', 'Stk', 'KRT', 'Pkg'];
+    const { listItem, openOrderId } = this.props;
     const mutationVars = {
       _id: Random.id(),
       itemId: listItem.itemId,
+      item: listItem.item,
       list_id: openOrderId,
       item_amount: _.random(1, 20),
       unit: this.state.unit
-      // unit: units[Math.floor(Math.random() * units.length)]
     }
     this.setState({ mutationVars }, () => {
+      console.log('mutationVars set:', mutationVars);
       if(typeof cb == 'function') cb();
     });
-    return mutationVars;
+    return null;
   }
   render() {
     // https://www.apollographql.com/docs/react/api/react-components/#mutation
-    const { listItem, groupId, openOrderId } = this.props;
+    const { listItem, openOrderId } = this.props;
     const { mutationVars } = this.state;
     if(!listItem || !listItem.item) {
       console.warn('listItem has no .item!!', listItem);
@@ -175,12 +172,13 @@ class ListBodyItem extends React.Component {
           mutation={ADD_TO_CART}
           variables={mutationVars}
           update={(cache, { data: { addToCart } }) => {
-            const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { groupId } });
+            const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { openOrderId } });
             const newOpenOrderBody = openorderbody.concat([addToCart]);
+            console.log('newOpenOrderBody', newOpenOrderBody);
             if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
             cache.writeQuery({
               query: GET_CART_DATA,
-              variables: { groupId },
+              variables: { openOrderId },
               data: { openorderbody: newOpenOrderBody }
             })
           }}

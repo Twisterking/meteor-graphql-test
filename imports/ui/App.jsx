@@ -103,7 +103,7 @@ export default (props) => {
               <option value="YBxgJgkSNLHBmdNpp">YBxgJgkSNLHBmdNpp</option>
             </select>
           </div>   
-          <Itemlist listId={listId} />
+          <Itemlist listId={listId} openOrderId={openOrderId} />
         </div>
         <div className="container">
           <div className="flex">

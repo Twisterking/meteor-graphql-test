@@ -1,7 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
-// import { ReactiveQuery } from 'apollo-live-client';
 import _ from 'lodash';
+// import { ReactiveQuery } from 'apollo-live-client';
 import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fiddle around
 
 // not updating while offline:
@@ -39,7 +39,7 @@ export default (props) => {
     >
       {(props) => {
         const { data, error, loading, refetch } = props;
-        // console.log('CART DATA', data);
+        console.log('CART DATA', data);
         // https://docs.meteor.com/api/connections.html#Meteor-status
         const connected = Meteor.status().connected || Meteor.status().status == 'connecting';
         if(loading && connected) return <h5>LOADING ...</h5>;
@@ -50,7 +50,10 @@ export default (props) => {
             { error ? <h2>ERROR!</h2> : (
               <ul className="itemlist">
                 {_.orderBy(items, ['row_id'], ['asc']).map(listItem => {
-                  // console.log('listItem', listItem);
+                  if(!listItem.item) {
+                    console.warn('listItem has no item!', listItem);
+                    return null;
+                  }
                   return (
                     <li key={listItem._id}>
                       <span className="rowid">{listItem.row_id}</span>
@@ -58,6 +61,7 @@ export default (props) => {
                         <h5>{listItem.item.item_name}</h5>
                         <small>{listItem.item.item_ref}</small>
                       </div>
+                      <span>{listItem.item_amount}</span>
                       <div className="units">
                         { listItem.item.units && listItem.item.units.length > 0 ?
                           <select>
