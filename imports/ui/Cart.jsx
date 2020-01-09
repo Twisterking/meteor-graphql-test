@@ -12,9 +12,9 @@ const GET_CART_DATA = gql`
       list_id
       row_id
       itemId
+      item
       item_amount
       unit
-      item
     }
   }
 `;

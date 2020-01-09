@@ -12,7 +12,7 @@ const GET_LIST_DATA = gql`
     listbody(listId: $listId, limit: $limit, skip: $skip) {
       _id
       row_id
-      itemId,
+      itemId
       item
     }
   }
@@ -35,6 +35,7 @@ const GET_CART_DATA = gql`
       list_id
       row_id
       itemId
+      item
       item_amount
       unit
     }
@@ -49,6 +50,7 @@ const ADD_TO_CART = gql`
       list_id
       row_id
       itemId
+      item
       item_amount
       unit
     }
@@ -174,8 +176,8 @@ class ListBodyItem extends React.Component {
           update={(cache, { data: { addToCart } }) => {
             const { openorderbody } = cache.readQuery({ query: GET_CART_DATA, variables: { openOrderId } });
             const newOpenOrderBody = openorderbody.concat([addToCart]);
-            console.log('newOpenOrderBody', newOpenOrderBody);
             if(_.findIndex(openorderbody, { _id: mutationVars._id }) !== -1) return;
+            console.log('addToCartaddToCartaddToCart', addToCart);
             cache.writeQuery({
               query: GET_CART_DATA,
               variables: { openOrderId },

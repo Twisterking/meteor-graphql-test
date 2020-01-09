@@ -19,7 +19,7 @@ _ = require('lodash');
 // WORA: https://morrys.github.io/wora/docs/apollo-offline
 const cache = new ApolloCache({
   dataIdFromObject: o => {
-    // console.log('dataIdFromObject o:', o);
+    console.log('dataIdFromObject o:', o);
     return o._id
   }
 });
@@ -28,9 +28,6 @@ export const client = new ApolloClient({
   cache
 });
 client.activeSubscriptions = new Set();
-// client.setOfflineOptions({
-//   link: ddpLink
-// });
 
 Meteor.startup(async () => {
   // wora

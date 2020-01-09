@@ -58,7 +58,7 @@ export const typeDefs = [
     success: Boolean
   }
   type Mutation {
-    addToCart(_id: ID, list_id: ID, itemId: ID, item_amount: Float, unit: String): OpenOrderElement
+    addToCart(_id: ID, list_id: ID, item: JSON, itemId: ID, item_amount: Float, unit: String): OpenOrderElement
   }
   `
 ];
@@ -218,6 +218,7 @@ export const resolvers = {
   Mutation: {
     addToCart(_, args, context) {
       const { _id, list_id, itemId, item_amount, unit } = args;
+      console.log('addToCart args', JSON.stringify(args, false, 2));
       const lastOOItem = OpenOrdersBody.findOne({ list_id }, { sort: { row_id: -1 } });
       const newBodyItem = {
         _id,
@@ -228,6 +229,8 @@ export const resolvers = {
         row_id: lastOOItem && (lastOOItem.row_id + 1) || 0
       };
       newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
+      newBodyItem.item = args.item;
+      console.log('newBodyItem', newBodyItem);
       return newBodyItem
     }
   },
