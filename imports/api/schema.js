@@ -36,17 +36,18 @@ export const typeDefs = [
     itemId: ID,
     unit: String,
     item_amount: Float,
-    total_price: Float
+    total_price: Float,
+    item: JSON
   }
   type Query {
     user(userId: ID): User
     listbody(listId: ID, limit: Int, skip: Int): [ListElement]
-    openorderbody(groupId: ID): [OpenOrderElement]
+    openorderbody(openOrderId: ID): [OpenOrderElement]
   }  
   type Subscription {
     user(userId: ID): SubscriptionEvent
     listbody(listId: ID, limit: Int, skip: Int): SubscriptionEvent
-    openorderbody(groupId: ID): SubscriptionEvent
+    openorderbody(openOrderId: ID): SubscriptionEvent
   }
   type SubscriptionEvent {
     event: String,
@@ -107,20 +108,10 @@ export const resolvers = {
       // return listbody;
     },
     openorderbody(_, args, context) {
-      const { groupId } = args;
-      let headId = null;
-      let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
-      if(!openOrderHead) {
-        const group = Groups.findOne({ _id: groupId });
-        headId = OpenOrdersHead.insert({   
-          group_id: groupId,
-          supplier_id: group.supplierId,
-          delivery_method: 'shipping',
-          datetime: new Date
-        });
-      }
-      if(!headId && openOrderHead) headId = openOrderHead._id;
-      return OpenOrdersBody.find({ list_id: headId }, { sort: { row_id: 1 } }).fetch();
+      const { openOrderId } = args;
+      const openOrderHead = OpenOrdersHead.findOne({ _id: openOrderId });
+      console.log('FETCH openOrderHead', openOrderHead);
+      return OpenOrdersBody.find({ list_id: openOrderId }, { sort: { row_id: 1 } }).fetch();
     },
   },
   Subscription: {
@@ -159,24 +150,35 @@ export const resolvers = {
       subscribe(_, args, context, ast) {
         const { listId, limit, skip } = args;
         console.log('SUB listbody args:', args);
-        const observable = ListsBody.find({ list_id: listId }, { sort: { row_id: 1 } });
-        return asyncIterator(observable);
+        const observable = ListsBody.find({ list_id: listId });
+        return asyncIterator(observable, {
+          sendInitialAdds: true
+        });
       }
     },
     openorderbody: {
-      resolve: payload => {
-        payload.doc.__typename = 'OpenOrderElement'; // no idea why I need this for the sub
-        return payload
+      resolve: ({ event, doc }, args, context, ast) => {
+        console.log('openorderbody sub resolve:', { event, doc, args });
+        doc.__typename = 'OpenOrderElement';
+        if(event == 'added' || event == 'changed') {
+          Object.assign(doc, {
+            item: Items.findOne(doc.itemId)
+          });
+        }
+        return { event, doc };
       },
       subscribe(_, args, context) {
-        const { groupId } = args;
-        let openOrderHead = OpenOrdersHead.findOne({ group_id: groupId });
+        const { openOrderId } = args;
+        const openOrderHead = OpenOrdersHead.findOne({ _id: openOrderId });
         if(!openOrderHead) {
-          console.error(`openOrderHead not found for groupId ${groupId}`);
+          console.error(`openOrderHead not found for _id ${openOrderId}`);
           return;
         }
-        const observable = OpenOrdersBody.find({ list_id: openOrderHead._id }, { sort: { row_id: 1 } });
-        return asyncIterator(observable);
+        console.log('SUB openOrderHead', openOrderHead);
+        const observable = OpenOrdersBody.find({ list_id: openOrderId });
+        return asyncIterator(observable, {
+          sendInitialAdds: true
+        });
       }
     }
   },

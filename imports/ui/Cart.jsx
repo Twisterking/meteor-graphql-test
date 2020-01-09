@@ -6,8 +6,8 @@ import { ReactiveQuery } from './reactiveQuery/index'; // just my own copy to fi
 
 // not updating while offline:
 const GET_CART_DATA = gql`
-  query getOpenOrder($groupId: ID) {
-    openorderbody(groupId: $groupId) {
+  query getOpenOrder($openOrderId: ID) {
+    openorderbody(openOrderId: $openOrderId) {
       _id
       list_id
       row_id
@@ -20,8 +20,8 @@ const GET_CART_DATA = gql`
 
 // not updating while offline:
 const SUB_CART_DATA = gql`
-  subscription subOpenOrder($groupId: ID) {
-    openorderbody(groupId: $groupId)  {
+  subscription subOpenOrder($openOrderId: ID) {
+    openorderbody(openOrderId: $openOrderId)  {
       event
       doc
     }
@@ -29,7 +29,7 @@ const SUB_CART_DATA = gql`
 `;
 
 export default (props) => {
-  const variables = { groupId: props.groupId };
+  const variables = { openOrderId: props.openOrderId };
   return (
     <ReactiveQuery
       query={GET_CART_DATA}

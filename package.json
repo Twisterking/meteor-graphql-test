@@ -12,7 +12,7 @@
     "@apollo/react-components": "^3.1.3",
     "@babel/runtime": "^7.3.4",
     "@types/react": "^16.9.11",
-    "@wora/apollo-offline": "^2.1.2",
+    "@wora/apollo-offline": "^2.2.0",
     "@wora/netinfo": "^1.1.0",
     "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.13",
