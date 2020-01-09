@@ -45,6 +45,7 @@ export default (props) => {
         if(loading && connected) return <h5>LOADING ...</h5>;
         if(!data) return <h5>No Data</h5>
         const items = data.openorderbody;
+        console.log('ITEMS HERE:', items);
         return (
           <div className="list-container">
             { error ? <h2>ERROR!</h2> : (

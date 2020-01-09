@@ -218,7 +218,7 @@ export const resolvers = {
   Mutation: {
     addToCart(_, args, context) {
       const { _id, list_id, itemId, item_amount, unit } = args;
-      console.log('addToCart args', JSON.stringify(args, false, 2));
+      // console.log('addToCart args', JSON.stringify(args, false, 2));
       const lastOOItem = OpenOrdersBody.findOne({ list_id }, { sort: { row_id: -1 } });
       const newBodyItem = {
         _id,
@@ -230,7 +230,7 @@ export const resolvers = {
       };
       newBodyItem._id = OpenOrdersBody.insert(newBodyItem);
       newBodyItem.item = args.item;
-      console.log('newBodyItem', newBodyItem);
+      // console.log('newBodyItem', newBodyItem);
       return newBodyItem
     }
   },
